@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="farmer.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -163,7 +164,14 @@
             </button>
           </div>
         </form>
-      </div>
+        
+        <div class="qr-output" style="margin-top:30px; display:none;" id="qrSection">
+  <h3>Generated QR Code</h3>
+  <div id="qrcode" style="margin:15px 0;"></div>
+  <p><strong>Batch ID:</strong> <span id="generatedBatch"></span></p>
+  <p><strong>Verify URL:</strong> <a id="verifyUrl" href="#" target="_blank"></a></p>
+  <button onclick="downloadQR()" class="btn btn-primary">Download QR</button>
+</div>
 
       <div class="recent-harvests">
         <h2>📋 Recent Harvest Records</h2>
@@ -365,6 +373,9 @@
                 Your payment will be processed within 7-15 days.`,
           );
 
+          // Generate batch ID + QR code
+          generateAndShowQR(herbType);
+
           // Reset form
           document.getElementById("harvestForm").reset();
           document.getElementById("gpsDisplay").classList.remove("active");
@@ -387,6 +398,41 @@
 
       // Set today's date as default
       document.getElementById("harvestDate").valueAsDate = new Date();
+      function generateAndShowQR(herb) {
+  const year = new Date().getFullYear();
+  const rand = Math.floor(100 + Math.random() * 900);
+  return `${herb}_${year}_${rand}`;
+}
+
+function generateAndShowQR(herb) {
+  const year = new Date().getFullYear();
+  const rand = Math.floor(100 + Math.random() * 900);
+  const batchId = `${herb}_${year}_${rand}`;
+  const verifyLink = `http://127.0.0.1:5500/index.html?batch=${batchId}`;
+
+  document.getElementById("generatedBatch").textContent = batchId;
+ const linkEl = document.getElementById("verifyUrl");
+linkEl.innerText = verifyLink;
+linkEl.href = verifyLink;
+
+  document.getElementById("qrcode").innerHTML = "";
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: verifyLink,
+    width: 180,
+    height: 180,
+  });
+
+  document.getElementById("qrSection").style.display = "block";
+}
+
+function downloadQR() {
+  const img = document.querySelector("#qrcode img");
+  const a = document.createElement("a");
+  a.href = img.src;
+  a.download = "batch_qr.png";
+  a.click();
+}
     </script>
   </body>
 </html>
