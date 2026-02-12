@@ -376,7 +376,9 @@
   };
 
   // Store batch (simulated backend)
-  localStorage.setItem(batchId, JSON.stringify(batchData));
+  const batches = JSON.parse(localStorage.getItem("batches")) || {};
+batches[batchId] = batchData;
+localStorage.setItem("batches", JSON.stringify(batches));
 
   showAlert(
     "success",

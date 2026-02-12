@@ -136,434 +136,171 @@
     </footer>
 
     <script>
-      const batchDatabase = {
-        ASHW_2026_001: {
-          productName: "Ashwagandha Root Capsules",
-          batchId: "ASHW_2026_001",
-          mfgDate: "January 15, 2026",
-          location: "Nagpur District, Maharashtra",
-          coords: [21.1458, 79.0882],
-          timeline: [
-            {
-              icon: "🌾",
-              title: "Harvested",
-              date: "December 20, 2025",
-              details: {
-                Collector: "Ramesh Kumar (ID: FK_2341)",
-                Quantity: "150 kg",
-                Location: "Nagpur, Maharashtra",
-                GPS: "21.1458°N, 79.0882°E",
-              },
-            },
-            {
-              icon: "🏭",
-              title: "Processed",
-              date: "January 5, 2026",
-              details: {
-                Facility: "GreenHerb Processing Pvt Ltd",
-                Method: "Low-temperature drying (40°C)",
-                Operator: "Sunita Verma",
-                Duration: "48 hours",
-              },
-            },
-            {
-              icon: "🔬",
-              title: "Lab Tested",
-              date: "January 10, 2026",
-              details: {
-                Lab: "BioTest Analytics, Mumbai",
-                "Report ID": "BT-2026-00789",
-                "Test Date": "January 10, 2026",
-                Certification: "NABL Accredited",
-              },
-            },
-            {
-              icon: "💊",
-              title: "Formulated",
-              date: "January 15, 2026",
-              details: {
-                "Batch Size": "10,000 capsules",
-                Formula: "ASH-CAP-500MG",
-                Facility: "AyurVed Pharma Ltd",
-                Packaging: "HDPE Bottles, 60 count",
-              },
-            },
-          ],
-          tests: [
-            {
-              name: "Moisture Content",
-              value: "8.2%",
-              status: "pass",
-              threshold: "< 10%",
-            },
-            {
-              name: "Pesticide Residues",
-              value: "Not Detected",
-              status: "pass",
-              threshold: "< 0.01 mg/kg",
-            },
-            {
-              name: "Heavy Metals (Lead)",
-              value: "0.05 ppm",
-              status: "pass",
-              threshold: "< 2.5 ppm",
-            },
-            {
-              name: "Withanolides",
-              value: "4.8%",
-              status: "pass",
-              threshold: "> 2.5%",
-            },
-            {
-              name: "DNA Barcode",
-              value: "Withania somnifera",
-              status: "pass",
-              threshold: "Species confirmed",
-            },
-            {
-              name: "Microbial Count",
-              value: "< 10³ CFU/g",
-              status: "pass",
-              threshold: "< 10⁵ CFU/g",
-            },
-          ],
-          payment: [
-            { value: "₹245/kg", label: "Base Price Paid" },
-            { value: "₹25/kg", label: "Sustainability Bonus" },
-            { value: "₹40,500", label: "Total Payment to Farmer" },
-            { value: "15 days", label: "Payment Processing Time" },
-          ],
-        },
-        TULSI_2026_042: {
-          productName: "Organic Tulsi Tea Blend",
-          batchId: "TULSI_2026_042",
-          mfgDate: "February 2, 2026",
-          location: "Satara District, Maharashtra",
-          coords: [17.6599, 73.9894],
-          timeline: [
-            {
-              icon: "🌿",
-              title: "Harvested",
-              date: "January 10, 2026",
-              details: {
-                Collector: "Women Farmer Collective (WFC_089)",
-                Quantity: "200 kg fresh leaves",
-                Location: "Satara, Maharashtra",
-                GPS: "17.6599°N, 73.9894°E",
-              },
-            },
-            {
-              icon: "☀️",
-              title: "Sun Dried",
-              date: "January 12, 2026",
-              details: {
-                Facility: "Village Cooperative Drying Unit",
-                Method: "Natural sun-drying",
-                Duration: "3 days",
-                Weather: "Clear skies, 28-32°C",
-              },
-            },
-            {
-              icon: "🔬",
-              title: "Lab Tested",
-              date: "January 20, 2026",
-              details: {
-                Lab: "Organic Certification Labs, Pune",
-                "Report ID": "OCL-2026-01234",
-                "Test Date": "January 20, 2026",
-                Certification: "FSSAI & Organic India",
-              },
-            },
-            {
-              icon: "📦",
-              title: "Packaged",
-              date: "February 2, 2026",
-              details: {
-                "Batch Size": "5,000 tea bags",
-                Formula: "TULSI-TEA-2G",
-                Facility: "Sacred Herbs Tea Co.",
-                Packaging: "Biodegradable tea bags",
-              },
-            },
-          ],
-          tests: [
-            {
-              name: "Moisture Content",
-              value: "9.5%",
-              status: "pass",
-              threshold: "< 12%",
-            },
-            {
-              name: "Pesticide Residues",
-              value: "Not Detected",
-              status: "pass",
-              threshold: "< 0.01 mg/kg",
-            },
-            {
-              name: "Essential Oil Content",
-              value: "0.7%",
-              status: "pass",
-              threshold: "> 0.5%",
-            },
-            {
-              name: "Eugenol",
-              value: "68%",
-              status: "pass",
-              threshold: "> 60%",
-            },
-            {
-              name: "DNA Barcode",
-              value: "Ocimum sanctum",
-              status: "pass",
-              threshold: "Species confirmed",
-            },
-            {
-              name: "Organic Certification",
-              value: "Verified",
-              status: "pass",
-              threshold: "Certified Organic",
-            },
-          ],
-          payment: [
-            { value: "₹180/kg", label: "Base Price Paid" },
-            { value: "₹30/kg", label: "Organic Premium" },
-            { value: "₹16,800", label: "Total to Collective" },
-            { value: "7 days", label: "Payment Processing" },
-          ],
-        },
-        BRAHMI_2026_018: {
-          productName: "Brahmi Leaf Extract",
-          batchId: "BRAHMI_2026_018",
-          mfgDate: "January 28, 2026",
-          location: "Kottayam District, Kerala",
-          coords: [9.5916, 76.5222],
-          timeline: [
-            {
-              icon: "🌊",
-              title: "Harvested (Wetland)",
-              date: "January 5, 2026",
-              details: {
-                Collector: "Kerala Ayurveda Farmers (KAF_156)",
-                Quantity: "100 kg fresh plant",
-                Location: "Kottayam, Kerala",
-                GPS: "9.5916°N, 76.5222°E",
-              },
-            },
-            {
-              icon: "🏭",
-              title: "Processed",
-              date: "January 8, 2026",
-              details: {
-                Facility: "AyurExtract Technologies",
-                Method: "Cold-press extraction",
-                Temperature: "< 25°C",
-                Yield: "12 kg extract",
-              },
-            },
-            {
-              icon: "🔬",
-              title: "Lab Tested",
-              date: "January 15, 2026",
-              details: {
-                Lab: "PhytoScience Labs, Kochi",
-                "Report ID": "PSL-2026-00445",
-                "Test Date": "January 15, 2026",
-                Certification: "GMP Certified",
-              },
-            },
-            {
-              icon: "🧪",
-              title: "Standardized",
-              date: "January 28, 2026",
-              details: {
-                "Batch Size": "10 liters",
-                Formula: "BRAHMI-EXT-20%",
-                Standardization: "20% Bacosides",
-                Packaging: "Amber glass bottles",
-              },
-            },
-          ],
-          tests: [
-            {
-              name: "Bacoside Content",
-              value: "22.3%",
-              status: "pass",
-              threshold: "> 20%",
-            },
-            {
-              name: "Heavy Metals",
-              value: "Within limits",
-              status: "pass",
-              threshold: "< WHO limits",
-            },
-            {
-              name: "Microbial Load",
-              value: "< 10² CFU/ml",
-              status: "pass",
-              threshold: "< 10³ CFU/ml",
-            },
-            {
-              name: "Aflatoxins",
-              value: "Not Detected",
-              status: "pass",
-              threshold: "< 5 ppb",
-            },
-            {
-              name: "DNA Authentication",
-              value: "Bacopa monnieri",
-              status: "pass",
-              threshold: "Species confirmed",
-            },
-            {
-              name: "Solvent Residues",
-              value: "None",
-              status: "pass",
-              threshold: "No harmful solvents",
-            },
-          ],
-          payment: [
-            { value: "₹320/kg", label: "Premium Price Paid" },
-            { value: "₹40/kg", label: "Quality Bonus" },
-            { value: "₹36,000", label: "Total Payment" },
-            { value: "10 days", label: "Payment Processing" },
-          ],
-        },
-      };
+  let map;
 
-      let map;
-
-      function verifyBatch() {
-        const input = document
-          .getElementById("batchInput")
-          .value.trim()
-          .toUpperCase();
-        loadBatch(input);
-      }
-
-      function loadBatch(batchId) {
-        const batch = batchDatabase[batchId];
-
-        if (!batch) {
-          alert(
-            "Batch ID not found. Please try: ASHW_2026_001, TULSI_2026_042, or BRAHMI_2026_018",
-          );
-          return;
-        }
-
-        // Update header
-        document.getElementById("productName").textContent = batch.productName;
-        document.getElementById("batchId").textContent = batch.batchId;
-        document.getElementById("mfgDate").textContent = batch.mfgDate;
-        document.getElementById("location").textContent = batch.location;
-
-        // Update timeline
-        const timelineHtml = batch.timeline
-          .map(
-            (item) => `
-                <div class="timeline-item">
-                    <div class="timeline-icon">${item.icon}</div>
-                    <div class="timeline-content">
-                        <h4>${item.title}</h4>
-                        <div class="timeline-date">📅 ${item.date}</div>
-                        <div class="timeline-details">
-                            ${Object.entries(item.details)
-                              .map(
-                                ([key, value]) => `
-                                <div class="detail-row">
-                                    <span class="detail-label">${key}:</span>
-                                    <span>${value}</span>
-                                </div>
-                            `,
-                              )
-                              .join("")}
-                        </div>
-                    </div>
-                </div>
-            `,
-          )
-          .join("");
-        document.getElementById("timelineContent").innerHTML = timelineHtml;
-
-        // Update test results
-        const testsHtml = batch.tests
-          .map(
-            (test) => `
-                <div class="test-item ${test.status}">
-                    <div>
-                        <div class="test-name">${test.name}</div>
-                        <div style="font-size: 0.85rem; color: var(--earth-600); margin-top: 0.25rem;">
-                            Threshold: ${test.threshold}
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="test-value">${test.value}</div>
-                        <span class="test-status ${test.status}">${test.status.toUpperCase()}</span>
-                    </div>
-                </div>
-            `,
-          )
-          .join("");
-        document.getElementById("testResults").innerHTML = testsHtml;
-
-        // Update payment details
-        const paymentHtml = batch.payment
-          .map(
-            (item) => `
-                <div class="payment-item">
-                    <div class="payment-value">${item.value}</div>
-                    <div class="payment-label">${item.label}</div>
-                </div>
-            `,
-          )
-          .join("");
-        document.getElementById("paymentDetails").innerHTML = paymentHtml;
-
-        // Show details
-        document.getElementById("batchDetails").style.display = "block";
-        document
-          .getElementById("batchDetails")
-          .scrollIntoView({ behavior: "smooth", block: "start" });
-
-        // Initialize map
-        setTimeout(() => initMap(batch.coords, batch.location), 100);
-      }
-
-      function initMap(coords, locationName) {
-        if (map) {
-          map.remove();
-        }
-
-        map = L.map("map").setView(coords, 10);
-
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "© OpenStreetMap contributors",
-        }).addTo(map);
-
-        const customIcon = L.divIcon({
-          html: '<div style="background: #2ecc71; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(46,204,113,0.4);">🌿</div>',
-          className: "custom-marker",
-          iconSize: [30, 30],
-        });
-
-        L.marker(coords, { icon: customIcon })
-          .addTo(map)
-          .bindPopup(`<strong>${locationName}</strong><br>Harvest Origin`)
-          .openPopup();
-
-        setTimeout(() => map.invalidateSize(), 100);
-      }
-
-      // Auto-load first batch on page load for demo
-      // Auto-load batch if QR parameter exists
-window.addEventListener('load', () => {
-  const params = new URLSearchParams(window.location.search);
-  const batchId = params.get('batch');
-
-  if (batchId) {
-    document.getElementById('batchInput').value = batchId;
-    loadBatch(batchId.toUpperCase());
+  function verifyBatch() {
+    const input = document
+      .getElementById("batchInput")
+      .value.trim()
+      .toUpperCase();
+    loadBatch(input);
   }
-});
-    </script>
+
+  function loadBatch(batchId) {
+    if (!batchId) return;
+
+    // 1️⃣ Check farmer batches
+    const farmerBatches = JSON.parse(localStorage.getItem("batches")) || {};
+    if (farmerBatches[batchId]) {
+      renderFarmerBatch(farmerBatches[batchId]);
+      return;
+    }
+
+    // 2️⃣ Check demo database
+    if (batchDatabase[batchId]) {
+      renderDemoBatch(batchDatabase[batchId]);
+      return;
+    }
+
+    alert("❌ Batch ID not found: " + batchId);
+  }
+
+  function renderDemoBatch(batch) {
+    document.getElementById("productName").textContent = batch.productName;
+    document.getElementById("batchId").textContent = batch.batchId;
+    document.getElementById("mfgDate").textContent = batch.mfgDate;
+    document.getElementById("location").textContent = batch.location;
+
+    document.getElementById("timelineContent").innerHTML = batch.timeline
+      .map(
+        (item) => `
+        <div class="timeline-item">
+          <div class="timeline-icon">${item.icon}</div>
+          <div class="timeline-content">
+            <h4>${item.title}</h4>
+            <div class="timeline-date">${item.date}</div>
+            <div class="timeline-details">
+              ${Object.entries(item.details)
+                .map(
+                  ([k, v]) =>
+                    `<div class="detail-row"><b>${k}:</b> ${v}</div>`,
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>
+      `,
+      )
+      .join("");
+
+    document.getElementById("testResults").innerHTML = batch.tests
+      .map(
+        (t) => `
+        <div class="test-item ${t.status}">
+          <div>
+            <div class="test-name">${t.name}</div>
+            <div style="font-size:0.8rem;">Threshold: ${t.threshold}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="test-value">${t.value}</div>
+            <span class="test-status ${t.status}">${t.status.toUpperCase()}</span>
+          </div>
+        </div>
+      `,
+      )
+      .join("");
+
+    document.getElementById("paymentDetails").innerHTML = batch.payment
+      .map(
+        (p) => `
+        <div class="payment-item">
+          <div class="payment-value">${p.value}</div>
+          <div class="payment-label">${p.label}</div>
+        </div>
+      `,
+      )
+      .join("");
+
+    showBatch(batch.coords, batch.location);
+  }
+
+  function renderFarmerBatch(data) {
+    document.getElementById("productName").textContent =
+      data.herb.toUpperCase() + " Harvest Batch";
+
+    document.getElementById("batchId").textContent = data.batchId;
+    document.getElementById("mfgDate").textContent = new Date(
+      data.harvestDate,
+    ).toDateString();
+    document.getElementById("location").textContent = data.location;
+
+    document.getElementById("timelineContent").innerHTML = `
+      <div class="timeline-item">
+        <div class="timeline-icon">🌿</div>
+        <div class="timeline-content">
+          <h4>Harvested</h4>
+          <div class="timeline-date">${new Date(
+            data.harvestDate,
+          ).toDateString()}</div>
+          <div class="timeline-details">
+            <div class="detail-row"><b>Herb:</b> ${data.herb}</div>
+            <div class="detail-row"><b>Quantity:</b> ${data.quantity} kg</div>
+            <div class="detail-row"><b>GPS:</b> ${data.gps.lat}, ${data.gps.lng}</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("testResults").innerHTML = `
+      <div class="test-item pass">
+        <div class="test-name">Initial Quality Check</div>
+        <div class="test-value">Passed</div>
+      </div>
+    `;
+
+    document.getElementById("paymentDetails").innerHTML = `
+      <div class="payment-item">
+        <div class="payment-value">₹${data.quantity * 270}</div>
+        <div class="payment-label">Estimated Farmer Payment</div>
+      </div>
+    `;
+
+    showBatch([data.gps.lat, data.gps.lng], data.location);
+  }
+
+  function showBatch(coords, locationName) {
+    document.getElementById("batchDetails").style.display = "block";
+    document
+      .getElementById("batchDetails")
+      .scrollIntoView({ behavior: "smooth" });
+
+    setTimeout(() => initMap(coords, locationName), 200);
+  }
+
+  function initMap(coords, locationName) {
+    if (map) map.remove();
+
+    map = L.map("map").setView(coords, 10);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(map);
+
+    L.marker(coords)
+      .addTo(map)
+      .bindPopup(`<b>${locationName}</b><br>Harvest Origin`)
+      .openPopup();
+  }
+
+  // Auto load from QR
+  window.addEventListener("load", () => {
+    const params = new URLSearchParams(window.location.search);
+    const batchId = params.get("batch");
+    if (batchId) {
+      document.getElementById("batchInput").value = batchId;
+      loadBatch(batchId.toUpperCase());
+    }
+  });
+</script>
   </body>
 </html>
