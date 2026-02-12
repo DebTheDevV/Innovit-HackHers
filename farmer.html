@@ -304,116 +304,110 @@
       }
 
       document
-        .getElementById("harvestForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const herbType = document.getElementById("herbType").value;
-          const quantity = document.getElementById("quantity").value;
-          const location = document.getElementById("location").value;
-          const harvestDate = new Date(
-            document.getElementById("harvestDate").value,
-          );
-          const notes = document.getElementById("notes").value;
-
-          // Validation
-          if (!herbType || !quantity || !location || !harvestDate) {
-            showAlert(
-              "error",
-              "Validation Error",
-              "Please fill in all required fields.",
-            );
-            return;
-          }
-
-          if (!currentGPS) {
-            showAlert(
-              "error",
-              "GPS Required",
-              "Please capture GPS location before submitting.",
-            );
-            return;
-          }
-
-          // Check season
-          const rules = validationRules[herbType];
-          const harvestMonth = harvestDate.getMonth() + 1; // JavaScript months are 0-indexed
-
-          if (!rules.season.months.includes(harvestMonth)) {
-            showAlert(
-              "error",
-              "❌ Harvest Not Allowed - Out of Season",
-              `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in this month. Permitted season: ${rules.season.name}.`,
-            );
-            return;
-          }
-
-          // Check zone
-          if (!rules.zones.includes(location)) {
-            showAlert(
-              "error",
-              "❌ Harvest Not Allowed - Out of Zone",
-              `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in ${location}. Permitted zones: ${rules.zones.join(", ")}.`,
-            );
-            return;
-          }
-
-          // Success - record on blockchain (simulated)
-          const collectionId = `COL_${Date.now()}`;
-          const blockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-
-          showAlert(
-            "success",
-            "✓ Harvest Recorded Successfully!",
-            `Your harvest has been verified and recorded on the blockchain.<br><br>
-                <strong>Collection ID:</strong> ${collectionId}<br>
-                <strong>Block Hash:</strong> ${blockHash.substr(0, 16)}...<br>
-                <strong>Quantity:</strong> ${quantity} kg<br>
-                <strong>Expected Payment:</strong> ₹${(quantity * 270).toLocaleString()}<br><br>
-                Your payment will be processed within 7-15 days.`,
-          );
-
-          // Generate batch ID + QR code
-          generateAndShowQR(herbType);
-
-          // Reset form
-          document.getElementById("harvestForm").reset();
-          document.getElementById("gpsDisplay").classList.remove("active");
-          currentGPS = null;
-        });
-
-      function showAlert(type, title, message) {
-        const alertBox = document.getElementById("alertBox");
-        alertBox.className = `alert ${type}`;
-        alertBox.innerHTML = `
-                <h3>${title}</h3>
-                <p>${message}</p>
-            `;
-        alertBox.scrollIntoView({ behavior: "smooth", block: "center" });
-
-        setTimeout(() => {
-          alertBox.style.display = "none";
-        }, 8000);
-      }
+  .getElementById("harvestForm")
+  .addEventListener("submit", submitHarvest);
 
       // Set today's date as default
       document.getElementById("harvestDate").valueAsDate = new Date();
-      function generateAndShowQR(herb) {
-  const year = new Date().getFullYear();
-  const rand = Math.floor(100 + Math.random() * 900);
-  return `${herb}_${year}_${rand}`;
+      function submitHarvest(e) {
+  e.preventDefault();
+
+  const herbType = document.getElementById("herbType").value;
+  const quantity = document.getElementById("quantity").value;
+  const location = document.getElementById("location").value;
+  const harvestDate = new Date(
+    document.getElementById("harvestDate").value,
+  );
+  const notes = document.getElementById("notes").value;
+
+  // Validation
+  if (!herbType || !quantity || !location || !harvestDate) {
+    showAlert(
+      "error",
+      "Validation Error",
+      "Please fill in all required fields.",
+    );
+    return;
+  }
+
+  if (!currentGPS) {
+    showAlert(
+      "error",
+      "GPS Required",
+      "Please capture GPS location before submitting.",
+    );
+    return;
+  }
+
+  // Check season
+  const rules = validationRules[herbType];
+  const harvestMonth = harvestDate.getMonth() + 1;
+
+  if (!rules.season.months.includes(harvestMonth)) {
+    showAlert(
+      "error",
+      "❌ Harvest Not Allowed - Out of Season",
+      `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in this month. Permitted season: ${rules.season.name}.`,
+    );
+    return;
+  }
+
+  // Check zone
+  if (!rules.zones.includes(location)) {
+    showAlert(
+      "error",
+      "❌ Harvest Not Allowed - Out of Zone",
+      `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in ${location}. Permitted zones: ${rules.zones.join(", ")}.`,
+    );
+    return;
+  }
+
+  // Create batch object
+  const batchId = generateBatchId(herbType);
+  const batchData = {
+    batchId,
+    herb: herbType,
+    quantity,
+    location,
+    gps: currentGPS,
+    harvestDate: harvestDate.toISOString(),
+    notes,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Store batch (simulated backend)
+  localStorage.setItem(batchId, JSON.stringify(batchData));
+
+  showAlert(
+    "success",
+    "✓ Harvest Recorded Successfully!",
+    `Your harvest has been verified and recorded.<br><br>
+     <strong>Batch ID:</strong> ${batchId}<br>
+     <strong>Quantity:</strong> ${quantity} kg<br>
+     <strong>Expected Payment:</strong> ₹${(quantity * 270).toLocaleString()}`
+  );
+
+  generateAndShowQR(herbType, batchId);
+
+  document.getElementById("harvestForm").reset();
+  document.getElementById("gpsDisplay").classList.remove("active");
+  currentGPS = null;
 }
 
-function generateAndShowQR(herb) {
+function generateBatchId(herb) {
   const year = new Date().getFullYear();
   const rand = Math.floor(100 + Math.random() * 900);
-  const batchId = `${herb}_${year}_${rand}`;
-  const verifyLink = `http://127.0.0.1:5500/index.html?batch=${batchId}`;
+  return `${herb.toUpperCase()}_${year}_${rand}`;
+}
+
+function generateAndShowQR(herb, batchId) {
+  const verifyLink = `index.html?batch=${batchId}`;
 
   document.getElementById("generatedBatch").textContent = batchId;
- const linkEl = document.getElementById("verifyUrl");
-linkEl.innerText = verifyLink;
-linkEl.href = verifyLink;
+
+  const linkEl = document.getElementById("verifyUrl");
+  linkEl.innerText = verifyLink;
+  linkEl.href = verifyLink;
 
   document.getElementById("qrcode").innerHTML = "";
 
@@ -425,6 +419,23 @@ linkEl.href = verifyLink;
 
   document.getElementById("qrSection").style.display = "block";
 }
+
+function showAlert(type, title, message) {
+  const alertBox = document.getElementById("alertBox");
+  alertBox.className = `alert ${type}`;
+  alertBox.innerHTML = `
+          <h3>${title}</h3>
+          <p>${message}</p>
+      `;
+  alertBox.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 8000);
+}
+
+// Set today's date as default
+document.getElementById("harvestDate").valueAsDate = new Date();
 
 function downloadQR() {
   const img = document.querySelector("#qrcode img");
