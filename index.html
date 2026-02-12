@@ -223,50 +223,114 @@
 
     showBatch(batch.coords, batch.location);
   }
+ function renderFarmerBatch(data) {
+  let timeline = [];
 
-  function renderFarmerBatch(data) {
-    document.getElementById("productName").textContent =
-      data.herb.toUpperCase() + " Harvest Batch";
+  // 🌱 Harvest Stage
+  timeline.push({
+    icon: "🌿",
+    title: "Harvested",
+    date: new Date(data.harvestDate).toDateString(),
+    details: {
+      Herb: data.herb,
+      Quantity: data.quantity + " kg",
+      GPS: `${data.gps.lat}, ${data.gps.lng}`
+    }
+  });
 
-    document.getElementById("batchId").textContent = data.batchId;
-    document.getElementById("mfgDate").textContent = new Date(
-      data.harvestDate,
-    ).toDateString();
-    document.getElementById("location").textContent = data.location;
+  // 🏭 Processing Stage
+  if (data.processing) {
+    timeline.push({
+      icon: "🏭",
+      title: "Processed",
+      date: new Date(data.processing.timestamp).toDateString(),
+      details: {
+        Method: data.processing.method,
+        Facility: data.processing.facility,
+        Operator: data.processing.operator
+      }
+    });
+  }
 
-    document.getElementById("timelineContent").innerHTML = `
-      <div class="timeline-item">
-        <div class="timeline-icon">🌿</div>
-        <div class="timeline-content">
-          <h4>Harvested</h4>
-          <div class="timeline-date">${new Date(
-            data.harvestDate,
-          ).toDateString()}</div>
-          <div class="timeline-details">
-            <div class="detail-row"><b>Herb:</b> ${data.herb}</div>
-            <div class="detail-row"><b>Quantity:</b> ${data.quantity} kg</div>
-            <div class="detail-row"><b>GPS:</b> ${data.gps.lat}, ${data.gps.lng}</div>
+  // 🧪 Lab Stage
+  if (data.lab) {
+    timeline.push({
+      icon: "🧪",
+      title: "Lab Verified",
+      date: new Date(data.lab.testDate).toDateString(),
+      details: {
+        Moisture: data.lab.moisture + "%",
+        Compound: data.lab.compound + "%",
+        Microbial: data.lab.microbial,
+        HeavyMetal: data.lab.heavyMetal,
+        Purity: data.lab.purity,
+        Lab: data.lab.labName
+      }
+    });
+  }
+
+  document.getElementById("productName").textContent =
+    data.herb.toUpperCase() + " Product";
+
+  document.getElementById("batchId").textContent = data.batchId;
+  document.getElementById("mfgDate").textContent =
+    new Date(data.harvestDate).toDateString();
+
+  document.getElementById("location").textContent = data.location;
+
+  document.getElementById("timelineContent").innerHTML = timeline
+    .map(
+      (item) => `
+        <div class="timeline-item">
+          <div class="timeline-icon">${item.icon}</div>
+          <div class="timeline-content">
+            <h4>${item.title}</h4>
+            <div class="timeline-date">${item.date}</div>
+            <div class="timeline-details">
+              ${Object.entries(item.details)
+                .map(
+                  ([k, v]) =>
+                    `<div class="detail-row"><b>${k}:</b> ${v}</div>`
+                )
+                .join("")}
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `
+    )
+    .join("");
 
+  // Lab Results UI
+  if (data.lab) {
     document.getElementById("testResults").innerHTML = `
       <div class="test-item pass">
-        <div class="test-name">Initial Quality Check</div>
-        <div class="test-value">Passed</div>
+        <div class="test-name">Moisture</div>
+        <div class="test-value">${data.lab.moisture}%</div>
+      </div>
+      <div class="test-item pass">
+        <div class="test-name">Active Compound</div>
+        <div class="test-value">${data.lab.compound}%</div>
+      </div>
+      <div class="test-item ${data.lab.microbial === "Pass" ? "pass" : "fail"}">
+        <div class="test-name">Microbial</div>
+        <div class="test-value">${data.lab.microbial}</div>
+      </div>
+      <div class="test-item ${data.lab.heavyMetal === "Pass" ? "pass" : "fail"}">
+        <div class="test-name">Heavy Metals</div>
+        <div class="test-value">${data.lab.heavyMetal}</div>
       </div>
     `;
-
-    document.getElementById("paymentDetails").innerHTML = `
-      <div class="payment-item">
-        <div class="payment-value">₹${data.quantity * 270}</div>
-        <div class="payment-label">Estimated Farmer Payment</div>
-      </div>
-    `;
-
-    showBatch([data.gps.lat, data.gps.lng], data.location);
   }
+
+  document.getElementById("paymentDetails").innerHTML = `
+    <div class="payment-item">
+      <div class="payment-value">₹${data.quantity * 270}</div>
+      <div class="payment-label">Farmer Payment</div>
+    </div>
+  `;
+
+  showBatch([data.gps.lat, data.gps.lng], data.location);
+}
 
   function showBatch(coords, locationName) {
     document.getElementById("batchDetails").style.display = "block";
