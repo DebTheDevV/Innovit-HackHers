@@ -1,332 +1,408 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HerbChain - Technical Architecture</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="architecture.css">
-   
-</head>
-<body>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="architecture.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">VanaspatiSetu🌿</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#verify">Verify</a>
+        <a href="farmer.html">Farmer</a>
+        <a href="qr_codes.html">QR</a>
+        <a href="architecture.html">Architecture</a>
+      </div>
+    </nav>
     <div class="header">
-        <h1>🌿 HerbChain Technical Architecture</h1>
-        <p>Blockchain-Powered End-to-End Traceability System</p>
+      <h1>🌿 HerbChain Technical Architecture</h1>
+      <p>Blockchain-Powered End-to-End Traceability System</p>
     </div>
 
     <div class="architecture">
-        <!-- Layer 1: Frontend -->
-        <div class="layer">
-            <div class="layer-title">
-                <span>📱</span>
-                <span>Layer 1: User Interface Layer</span>
+      <!-- Layer 1: Frontend -->
+      <div class="layer">
+        <div class="layer-title">
+          <span>📱</span>
+          <span>Layer 1: User Interface Layer</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <div class="component-icon">👨‍🌾</div>
+            <h3>Farmer Mobile App</h3>
+            <p>
+              Cross-platform app for recording harvests with GPS capture,
+              offline sync, and real-time validation feedback.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">React Native</span>
+              <span class="tech-badge">Flutter</span>
             </div>
-            <div class="components">
-                <div class="component">
-                    <div class="component-icon">👨‍🌾</div>
-                    <h3>Farmer Mobile App</h3>
-                    <p>Cross-platform app for recording harvests with GPS capture, offline sync, and real-time validation feedback.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">React Native</span>
-                        <span class="tech-badge">Flutter</span>
-                    </div>
-                </div>
+          </div>
 
-                <div class="component">
-                    <div class="component-icon">🏭</div>
-                    <h3>Processor Dashboard</h3>
-                    <p>Web portal for logging processing batches, uploading lab reports, and managing quality control workflows.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">React</span>
-                        <span class="tech-badge">Next.js</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🛒</div>
-                    <h3>Consumer Portal</h3>
-                    <p>Public website for QR scanning and viewing complete product provenance with interactive maps and timelines.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">HTML/CSS/JS</span>
-                        <span class="tech-badge">Leaflet.js</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">👮</div>
-                    <h3>Regulator Dashboard</h3>
-                    <p>Analytics interface for compliance monitoring, audit trails, and filtering by herb, region, season, or facility.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">Vue.js</span>
-                        <span class="tech-badge">D3.js</span>
-                    </div>
-                </div>
+          <div class="component">
+            <div class="component-icon">🏭</div>
+            <h3>Processor Dashboard</h3>
+            <p>
+              Web portal for logging processing batches, uploading lab reports,
+              and managing quality control workflows.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">React</span>
+              <span class="tech-badge">Next.js</span>
             </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">🛒</div>
+            <h3>Consumer Portal</h3>
+            <p>
+              Public website for QR scanning and viewing complete product
+              provenance with interactive maps and timelines.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">HTML/CSS/JS</span>
+              <span class="tech-badge">Leaflet.js</span>
+            </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">👮</div>
+            <h3>Regulator Dashboard</h3>
+            <p>
+              Analytics interface for compliance monitoring, audit trails, and
+              filtering by herb, region, season, or facility.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">Vue.js</span>
+              <span class="tech-badge">D3.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">⬇️</div>
+
+      <!-- Layer 2: API Gateway -->
+      <div class="layer">
+        <div class="layer-title">
+          <span>🔌</span>
+          <span>Layer 2: API Gateway & Business Logic</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <div class="component-icon">🚪</div>
+            <h3>REST API Server</h3>
+            <p>
+              Node.js/Express backend handling authentication, request
+              validation, and blockchain interaction orchestration.
+            </p>
+            <div class="smart-contract">
+              <div class="code-comment">// Key endpoints</div>
+              POST /api/harvest/submit<br />
+              POST /api/processing/batch<br />
+              POST /api/lab/results<br />
+              GET /api/batch/:id/provenance<br />
+              GET /api/audit/compliance
+            </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">🔐</div>
+            <h3>Authentication Service</h3>
+            <p>
+              JWT-based auth with role-based access control (farmer, processor,
+              manufacturer, regulator).
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">OAuth 2.0</span>
+              <span class="tech-badge">JWT</span>
+            </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">💰</div>
+            <h3>Price Oracle</h3>
+            <p>
+              Real-time commodity pricing API with fair-trade premium
+              calculations and payment verification logic.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">CoinGecko API</span>
+              <span class="tech-badge">Custom Logic</span>
+            </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">📂</div>
+            <h3>File Storage</h3>
+            <p>
+              IPFS for distributed lab report storage with content-addressable
+              hashing for integrity verification.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">IPFS</span>
+              <span class="tech-badge">AWS S3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">⬇️</div>
+
+      <!-- Layer 3: Blockchain -->
+      <div class="layer">
+        <div class="layer-title">
+          <span>⛓️</span>
+          <span>Layer 3: Blockchain Network (Hyperledger Fabric)</span>
         </div>
 
-        <div class="flow-arrow">⬇️</div>
-
-        <!-- Layer 2: API Gateway -->
-        <div class="layer">
-            <div class="layer-title">
-                <span>🔌</span>
-                <span>Layer 2: API Gateway & Business Logic</span>
-            </div>
-            <div class="components">
-                <div class="component">
-                    <div class="component-icon">🚪</div>
-                    <h3>REST API Server</h3>
-                    <p>Node.js/Express backend handling authentication, request validation, and blockchain interaction orchestration.</p>
-                    <div class="smart-contract">
-                        <div class="code-comment">// Key endpoints</div>
-                        POST /api/harvest/submit<br>
-                        POST /api/processing/batch<br>
-                        POST /api/lab/results<br>
-                        GET /api/batch/:id/provenance<br>
-                        GET /api/audit/compliance
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🔐</div>
-                    <h3>Authentication Service</h3>
-                    <p>JWT-based auth with role-based access control (farmer, processor, manufacturer, regulator).</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">OAuth 2.0</span>
-                        <span class="tech-badge">JWT</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">💰</div>
-                    <h3>Price Oracle</h3>
-                    <p>Real-time commodity pricing API with fair-trade premium calculations and payment verification logic.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">CoinGecko API</span>
-                        <span class="tech-badge">Custom Logic</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">📂</div>
-                    <h3>File Storage</h3>
-                    <p>IPFS for distributed lab report storage with content-addressable hashing for integrity verification.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">IPFS</span>
-                        <span class="tech-badge">AWS S3</span>
-                    </div>
-                </div>
-            </div>
+        <div class="data-flow">
+          <div class="flow-box">
+            <strong>Organizations</strong>
+            FarmerOrg, ProcessorOrg, ManufacturerOrg, RegulatorOrg
+          </div>
+          <div class="flow-box">
+            <strong>Channels</strong>
+            harvest-channel, processing-channel, compliance-channel
+          </div>
+          <div class="flow-box">
+            <strong>Consensus</strong>
+            PBFT (Practical Byzantine Fault Tolerance)
+          </div>
+          <div class="flow-box">
+            <strong>Orderer</strong>
+            Kafka/Raft for transaction ordering
+          </div>
         </div>
 
-        <div class="flow-arrow">⬇️</div>
-
-        <!-- Layer 3: Blockchain -->
-        <div class="layer">
-            <div class="layer-title">
-                <span>⛓️</span>
-                <span>Layer 3: Blockchain Network (Hyperledger Fabric)</span>
+        <div class="components" style="margin-top: 2rem">
+          <div class="component">
+            <div class="component-icon">📜</div>
+            <h3>Smart Contract: Harvest Validation</h3>
+            <p>
+              Validates harvest events against season/zone rules. Creates
+              immutable CollectionEvent on approval.
+            </p>
+            <div class="smart-contract">
+              <div class="code-comment">// Chaincode (Go)</div>
+              func ValidateHarvest(herbType, location, timestamp) {<br />
+              &nbsp;&nbsp;if !IsInSeason() return ERROR<br />
+              &nbsp;&nbsp;if !IsInZone() return ERROR<br />
+              &nbsp;&nbsp;CreateCollectionEvent()<br />
+              }
             </div>
-            
-            <div class="data-flow">
-                <div class="flow-box">
-                    <strong>Organizations</strong>
-                    FarmerOrg, ProcessorOrg, ManufacturerOrg, RegulatorOrg
-                </div>
-                <div class="flow-box">
-                    <strong>Channels</strong>
-                    harvest-channel, processing-channel, compliance-channel
-                </div>
-                <div class="flow-box">
-                    <strong>Consensus</strong>
-                    PBFT (Practical Byzantine Fault Tolerance)
-                </div>
-                <div class="flow-box">
-                    <strong>Orderer</strong>
-                    Kafka/Raft for transaction ordering
-                </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">🔬</div>
+            <h3>Smart Contract: Quality Thresholds</h3>
+            <p>
+              Validates lab test results against pre-defined quality parameters.
+              Auto-flags non-compliant batches.
+            </p>
+            <div class="smart-contract">
+              <div class="code-comment">// Chaincode (Node.js)</div>
+              ValidateLabResults(testResults) {<br />
+              &nbsp;&nbsp;if (moisture > 10%) REJECT<br />
+              &nbsp;&nbsp;if (pesticide > 0.01) REJECT<br />
+              &nbsp;&nbsp;CreateQualityEvent(PASS)<br />
+              }
             </div>
+          </div>
 
-            <div class="components" style="margin-top: 2rem;">
-                <div class="component">
-                    <div class="component-icon">📜</div>
-                    <h3>Smart Contract: Harvest Validation</h3>
-                    <p>Validates harvest events against season/zone rules. Creates immutable CollectionEvent on approval.</p>
-                    <div class="smart-contract">
-                        <div class="code-comment">// Chaincode (Go)</div>
-                        func ValidateHarvest(herbType, location, timestamp) {<br>
-                        &nbsp;&nbsp;if !IsInSeason() return ERROR<br>
-                        &nbsp;&nbsp;if !IsInZone() return ERROR<br>
-                        &nbsp;&nbsp;CreateCollectionEvent()<br>
-                        }
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🔬</div>
-                    <h3>Smart Contract: Quality Thresholds</h3>
-                    <p>Validates lab test results against pre-defined quality parameters. Auto-flags non-compliant batches.</p>
-                    <div class="smart-contract">
-                        <div class="code-comment">// Chaincode (Node.js)</div>
-                        ValidateLabResults(testResults) {<br>
-                        &nbsp;&nbsp;if (moisture > 10%) REJECT<br>
-                        &nbsp;&nbsp;if (pesticide > 0.01) REJECT<br>
-                        &nbsp;&nbsp;CreateQualityEvent(PASS)<br>
-                        }
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">💵</div>
-                    <h3>Smart Contract: Fair Price</h3>
-                    <p>Calculates minimum farmer payment based on commodity price + sustainability bonus. Enforces payment terms.</p>
-                    <div class="smart-contract">
-                        <div class="code-comment">// Payment validation</div>
-                        CalculatePayment(quantity, price) {<br>
-                        &nbsp;&nbsp;base = quantity * price<br>
-                        &nbsp;&nbsp;bonus = base * 0.10<br>
-                        &nbsp;&nbsp;return base + bonus<br>
-                        }
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🔗</div>
-                    <h3>Smart Contract: Batch Linking</h3>
-                    <p>Links collection → processing → formulation batches to create full provenance chain for final product.</p>
-                    <div class="smart-contract">
-                        <div class="code-comment">// Batch hierarchy</div>
-                        CreateFormulationBatch() {<br>
-                        &nbsp;&nbsp;collectionIDs: [...]<br>
-                        &nbsp;&nbsp;processingIDs: [...]<br>
-                        &nbsp;&nbsp;finalProductID<br>
-                        }
-                    </div>
-                </div>
+          <div class="component">
+            <div class="component-icon">💵</div>
+            <h3>Smart Contract: Fair Price</h3>
+            <p>
+              Calculates minimum farmer payment based on commodity price +
+              sustainability bonus. Enforces payment terms.
+            </p>
+            <div class="smart-contract">
+              <div class="code-comment">// Payment validation</div>
+              CalculatePayment(quantity, price) {<br />
+              &nbsp;&nbsp;base = quantity * price<br />
+              &nbsp;&nbsp;bonus = base * 0.10<br />
+              &nbsp;&nbsp;return base + bonus<br />
+              }
             </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">🔗</div>
+            <h3>Smart Contract: Batch Linking</h3>
+            <p>
+              Links collection → processing → formulation batches to create full
+              provenance chain for final product.
+            </p>
+            <div class="smart-contract">
+              <div class="code-comment">// Batch hierarchy</div>
+              CreateFormulationBatch() {<br />
+              &nbsp;&nbsp;collectionIDs: [...]<br />
+              &nbsp;&nbsp;processingIDs: [...]<br />
+              &nbsp;&nbsp;finalProductID<br />
+              }
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="flow-arrow">⬇️</div>
+      <div class="flow-arrow">⬇️</div>
 
-        <!-- Layer 4: Data -->
-        <div class="layer">
-            <div class="layer-title">
-                <span>💾</span>
-                <span>Layer 4: Data Persistence Layer</span>
-            </div>
-            <div class="components">
-                <div class="component">
-                    <div class="component-icon">🗂️</div>
-                    <h3>Blockchain Ledger</h3>
-                    <p>Immutable distributed ledger storing all collection, processing, testing, and payment events with cryptographic hashing.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">LevelDB</span>
-                        <span class="tech-badge">CouchDB</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🗄️</div>
-                    <h3>Off-Chain Database</h3>
-                    <p>PostgreSQL for user profiles, session management, and cached query results for faster API responses.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">PostgreSQL</span>
-                        <span class="tech-badge">Redis Cache</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">📊</div>
-                    <h3>Analytics Warehouse</h3>
-                    <p>Time-series data for trends analysis: harvest volumes, quality metrics, pricing patterns, compliance rates.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">InfluxDB</span>
-                        <span class="tech-badge">BigQuery</span>
-                    </div>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">📁</div>
-                    <h3>Document Storage</h3>
-                    <p>IPFS for lab reports, certificates, images. Only content hashes stored on-chain for verification.</p>
-                    <div class="tech-stack">
-                        <span class="tech-badge">IPFS</span>
-                        <span class="tech-badge">Filecoin</span>
-                    </div>
-                </div>
-            </div>
+      <!-- Layer 4: Data -->
+      <div class="layer">
+        <div class="layer-title">
+          <span>💾</span>
+          <span>Layer 4: Data Persistence Layer</span>
         </div>
+        <div class="components">
+          <div class="component">
+            <div class="component-icon">🗂️</div>
+            <h3>Blockchain Ledger</h3>
+            <p>
+              Immutable distributed ledger storing all collection, processing,
+              testing, and payment events with cryptographic hashing.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">LevelDB</span>
+              <span class="tech-badge">CouchDB</span>
+            </div>
+          </div>
 
-        <!-- Performance Stats -->
-        <div class="layer" style="margin-top: 3rem;">
-            <div class="layer-title">
-                <span>⚡</span>
-                <span>System Performance & Scalability</span>
+          <div class="component">
+            <div class="component-icon">🗄️</div>
+            <h3>Off-Chain Database</h3>
+            <p>
+              PostgreSQL for user profiles, session management, and cached query
+              results for faster API responses.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">PostgreSQL</span>
+              <span class="tech-badge">Redis Cache</span>
             </div>
-            <div class="stats-grid">
-                <div class="stat">
-                    <div class="stat-value">< 3s</div>
-                    <div class="stat-label">Transaction Time</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">10K+</div>
-                    <div class="stat-label">TPS Capacity</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">99.9%</div>
-                    <div class="stat-label">Uptime SLA</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">∞</div>
-                    <div class="stat-label">Data Immutability</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">100K+</div>
-                    <div class="stat-label">Users Supported</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">50ms</div>
-                    <div class="stat-label">API Latency</div>
-                </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">📊</div>
+            <h3>Analytics Warehouse</h3>
+            <p>
+              Time-series data for trends analysis: harvest volumes, quality
+              metrics, pricing patterns, compliance rates.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">InfluxDB</span>
+              <span class="tech-badge">BigQuery</span>
             </div>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">📁</div>
+            <h3>Document Storage</h3>
+            <p>
+              IPFS for lab reports, certificates, images. Only content hashes
+              stored on-chain for verification.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-badge">IPFS</span>
+              <span class="tech-badge">Filecoin</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Security -->
-        <div class="layer">
-            <div class="layer-title">
-                <span>🔒</span>
-                <span>Security & Compliance</span>
-            </div>
-            <div class="components">
-                <div class="component">
-                    <div class="component-icon">🛡️</div>
-                    <h3>Data Encryption</h3>
-                    <p>AES-256 at rest, TLS 1.3 in transit. Private keys stored in HSM (Hardware Security Modules).</p>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">👤</div>
-                    <h3>Identity Management</h3>
-                    <p>Hyperledger Fabric CA for certificate issuance. Multi-signature approval for critical transactions.</p>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">📋</div>
-                    <h3>Compliance</h3>
-                    <p>GDPR-compliant data handling. FSSAI & AYUSH audit trails. ISO 27001 security standards.</p>
-                </div>
-
-                <div class="component">
-                    <div class="component-icon">🔍</div>
-                    <h3>Audit Logs</h3>
-                    <p>Complete immutable audit trail. All actions traceable to authenticated users. Tamper-evident logs.</p>
-                </div>
-            </div>
+      <!-- Performance Stats -->
+      <div class="layer" style="margin-top: 3rem">
+        <div class="layer-title">
+          <span>⚡</span>
+          <span>System Performance & Scalability</span>
         </div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-value">< 3s</div>
+            <div class="stat-label">Transaction Time</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">10K+</div>
+            <div class="stat-label">TPS Capacity</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">99.9%</div>
+            <div class="stat-label">Uptime SLA</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">∞</div>
+            <div class="stat-label">Data Immutability</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">100K+</div>
+            <div class="stat-label">Users Supported</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">50ms</div>
+            <div class="stat-label">API Latency</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="layer">
+        <div class="layer-title">
+          <span>🔒</span>
+          <span>Security & Compliance</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <div class="component-icon">🛡️</div>
+            <h3>Data Encryption</h3>
+            <p>
+              AES-256 at rest, TLS 1.3 in transit. Private keys stored in HSM
+              (Hardware Security Modules).
+            </p>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">👤</div>
+            <h3>Identity Management</h3>
+            <p>
+              Hyperledger Fabric CA for certificate issuance. Multi-signature
+              approval for critical transactions.
+            </p>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">📋</div>
+            <h3>Compliance</h3>
+            <p>
+              GDPR-compliant data handling. FSSAI & AYUSH audit trails. ISO
+              27001 security standards.
+            </p>
+          </div>
+
+          <div class="component">
+            <div class="component-icon">🔍</div>
+            <h3>Audit Logs</h3>
+            <p>
+              Complete immutable audit trail. All actions traceable to
+              authenticated users. Tamper-evident logs.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="text-align: center; margin-top: 3rem; padding: 2rem; opacity: 0.6;">
-        <p style="font-size: 0.9rem;">© 2026 HerbChain Project | Built on Hyperledger Fabric</p>
+    <div
+      style="text-align: center; margin-top: 3rem; padding: 2rem; opacity: 0.6"
+    >
+      <p style="font-size: 0.9rem">
+        © 2026 HerbChain Project | Built on Hyperledger Fabric
+      </p>
     </div>
-</body>
+  </body>
 </html>
