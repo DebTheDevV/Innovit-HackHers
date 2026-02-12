@@ -554,10 +554,16 @@
       }
 
       // Auto-load first batch on page load for demo
-      window.addEventListener("load", () => {
-        // Optional: auto-load a sample batch
-        // loadBatch('ASHW_2026_001');
-      });
+      // Auto-load batch if QR parameter exists
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const batchId = params.get('batch');
+
+  if (batchId) {
+    document.getElementById('batchInput').value = batchId;
+    loadBatch(batchId.toUpperCase());
+  }
+});
     </script>
   </body>
 </html>
