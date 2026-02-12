@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerbChain - Transparent Herbal Supply Chain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --earth-900: #1a2f1a;
+            --earth-800: #2d4a2d;
+            --earth-700: #3d5e3d;
+            --earth-600: #527052;
+            --earth-500: #6b8e6b;
+            --earth-400: #8fad8f;
+            --earth-300: #b5ccb5;
+            --earth-200: #d9e8d9;
+            --earth-100: #f0f7f0;
+            
+            --trust-green: #2ecc71;
+            --warning-amber: #f39c12;
+            --alert-red: #e74c3c;
+            --cream: #fdfbf7;
+            --charcoal: #2c3e50;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--earth-100) 0%, var(--cream) 100%);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            z-index: 1000;
+        }
+
+        header {
+            background: var(--earth-900);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🌿";
+            font-size: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--earth-300);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--trust-green);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--earth-800) 0%, var(--earth-700) 100%);
+            color: white;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(46,204,113,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 3rem;
+        }
+
+        .search-section h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--earth-900);
+        }
+
+        .qr-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .qr-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--earth-300);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .qr-input:focus {
+            outline: none;
+            border-color: var(--trust-green);
+            box-shadow: 0 0 0 4px rgba(46,204,113,0.1);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--trust-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46,204,113,0.3);
+        }
+
+        .quick-samples {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .sample-btn {
+            padding: 0.5rem 1rem;
+            background: var(--earth-100);
+            border: 2px solid var(--earth-300);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+        }
+
+        .sample-btn:hover {
+            background: var(--earth-200);
+            border-color: var(--earth-600);
+        }
+
+        .batch-details {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .batch-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-verified {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .batch-info h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--earth-900);
+        }
+
+        .batch-meta {
+            color: var(--earth-600);
+            font-size: 0.95rem;
+        }
+
+        .qr-display {
+            width: 100px;
+            height: 100px;
+            background: var(--earth-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .timeline {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .timeline h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+            color: var(--earth-900);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            padding-bottom: 2rem;
+            border-left: 3px solid var(--earth-300);
+        }
+
+        .timeline-item:last-child {
+            border-left-color: transparent;
+            padding-bottom: 0;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: -1.25rem;
+            top: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--trust-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(46,204,113,0.3);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--earth-900);
+        }
+
+        .timeline-date {
+            color: var(--earth-600);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-details {
+            background: var(--earth-100);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--earth-200);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--earth-700);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--earth-900);
+        }
+
+        #map {
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .test-results {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--earth-100);
+            border-radius: 8px;
+            border-left: 4px solid var(--trust-green);
+        }
+
+        .test-item.warning {
+            border-left-color: var(--warning-amber);
+        }
+
+        .test-item.fail {
+            border-left-color: var(--alert-red);
+        }
+
+        .test-name {
+            font-weight: 600;
+        }
+
+        .test-value {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .test-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pass {
+            background: var(--trust-green);
+            color: white;
+        }
+
+        .warning-status {
+            background: var(--warning-amber);
+            color: white;
+        }
+
+        .fair-trade {
+            background: linear-gradient(135deg, var(--earth-700) 0%, var(--earth-600) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .fair-trade h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .payment-item {
+            text-align: center;
+        }
+
+        .payment-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background: var(--earth-900);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-content p {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .batch-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .qr-input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    
+    <header>
+        <div class="header-content">
+            <div class="logo">VanaspatiSetu</div>
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#verify">Verify Batch</a>
+                <a href="farmer.html">Farmer Portal</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1>From Soil to Shelf</h1>
+            <p>Every herb has a story. Verify the complete journey of your herbal products with blockchain-powered transparency.</p>
+        </div>
+
+        <div class="search-section" id="verify">
+            <h2>Verify Your Product</h2>
+            <div class="qr-input-group">
+                <input type="text" class="qr-input" id="batchInput" placeholder="Enter Batch ID (e.g., ASHW_2026_001) or scan QR code">
+                <button class="btn btn-primary" onclick="verifyBatch()">Verify</button>
+            </div>
+            <p style="margin-bottom: 1rem; color: var(--earth-600);">Try our sample batches:</p>
+            <div class="quick-samples">
+                <button class="sample-btn" onclick="loadBatch('ASHW_2026_001')">Ashwagandha Capsules</button>
+                <button class="sample-btn" onclick="loadBatch('TULSI_2026_042')">Tulsi Tea Blend</button>
+                <button class="sample-btn" onclick="loadBatch('BRAHMI_2026_018')">Brahmi Extract</button>
+            </div>
+        </div>
+
+        <div id="batchDetails" class="batch-details">
+            <div class="batch-header">
+                <div class="qr-display">📱</div>
+                <div class="batch-info">
+                    <h2 id="productName">Loading...</h2>
+                    <div class="batch-meta">
+                        <strong>Batch ID:</strong> <span id="batchId"></span> | 
+                        <strong>Manufactured:</strong> <span id="mfgDate"></span>
+                    </div>
+                </div>
+                <div class="status-badge status-verified">✓ Verified</div>
+            </div>
+
+            <div class="timeline">
+                <h3>🌱 Journey Timeline</h3>
+                <div id="timelineContent"></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📍 Origin Map</h3>
+                    <div id="map"></div>
+                    <div style="margin-top: 1rem; color: var(--earth-600); font-size: 0.9rem;">
+                        <strong>Location:</strong> <span id="location"></span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔬 Lab Test Results</h3>
+                    <div id="testResults" class="test-results"></div>
+                </div>
+            </div>
+
+            <div class="fair-trade">
+                <h3>💰 Fair Trade & Sustainability</h3>
+                <div class="payment-details" id="paymentDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p><strong>HerbChain</strong> - Powered by Hyperledger Fabric Blockchain</p>
+            <p>Ensuring transparency, quality, and fair practices in the herbal supply chain</p>
+            <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2026 HerbChain Project. Built for transparency and trust.</p>
+        </div>
+    </footer>
+
+    <script>
+        const batchDatabase = {
+            'ASHW_2026_001': {
+                productName: 'Ashwagandha Root Capsules',
+                batchId: 'ASHW_2026_001',
+                mfgDate: 'January 15, 2026',
+                location: 'Nagpur District, Maharashtra',
+                coords: [21.1458, 79.0882],
+                timeline: [
+                    {
+                        icon: '🌾',
+                        title: 'Harvested',
+                        date: 'December 20, 2025',
+                        details: {
+                            'Collector': 'Ramesh Kumar (ID: FK_2341)',
+                            'Quantity': '150 kg',
+                            'Location': 'Nagpur, Maharashtra',
+                            'GPS': '21.1458°N, 79.0882°E'
+                        }
+                    },
+                    {
+                        icon: '🏭',
+                        title: 'Processed',
+                        date: 'January 5, 2026',
+                        details: {
+                            'Facility': 'GreenHerb Processing Pvt Ltd',
+                            'Method': 'Low-temperature drying (40°C)',
+                            'Operator': 'Sunita Verma',
+                            'Duration': '48 hours'
+                        }
+                    },
+                    {
+                        icon: '🔬',
+                        title: 'Lab Tested',
+                        date: 'January 10, 2026',
+                        details: {
+                            'Lab': 'BioTest Analytics, Mumbai',
+                            'Report ID': 'BT-2026-00789',
+                            'Test Date': 'January 10, 2026',
+                            'Certification': 'NABL Accredited'
+                        }
+                    },
+                    {
+                        icon: '💊',
+                        title: 'Formulated',
+                        date: 'January 15, 2026',
+                        details: {
+                            'Batch Size': '10,000 capsules',
+                            'Formula': 'ASH-CAP-500MG',
+                            'Facility': 'AyurVed Pharma Ltd',
+                            'Packaging': 'HDPE Bottles, 60 count'
+                        }
+                    }
+                ],
+                tests: [
+                    { name: 'Moisture Content', value: '8.2%', status: 'pass', threshold: '< 10%' },
+                    { name: 'Pesticide Residues', value: 'Not Detected', status: 'pass', threshold: '< 0.01 mg/kg' },
+                    { name: 'Heavy Metals (Lead)', value: '0.05 ppm', status: 'pass', threshold: '< 2.5 ppm' },
+                    { name: 'Withanolides', value: '4.8%', status: 'pass', threshold: '> 2.5%' },
+                    { name: 'DNA Barcode', value: 'Withania somnifera', status: 'pass', threshold: 'Species confirmed' },
+                    { name: 'Microbial Count', value: '< 10³ CFU/g', status: 'pass', threshold: '< 10⁵ CFU/g' }
+                ],
+                payment: [
+                    { value: '₹245/kg', label: 'Base Price Paid' },
+                    { value: '₹25/kg', label: 'Sustainability Bonus' },
+                    { value: '₹40,500', label: 'Total Payment to Farmer' },
+                    { value: '15 days', label: 'Payment Processing Time' }
+                ]
+            },
+            'TULSI_2026_042': {
+                productName: 'Organic Tulsi Tea Blend',
+                batchId: 'TULSI_2026_042',
+                mfgDate: 'February 2, 2026',
+                location: 'Satara District, Maharashtra',
+                coords: [17.6599, 73.9894],
+                timeline: [
+                    {
+                        icon: '🌿',
+                        title: 'Harvested',
+                        date: 'January 10, 2026',
+                        details: {
+                            'Collector': 'Women Farmer Collective (WFC_089)',
+                            'Quantity': '200 kg fresh leaves',
+                            'Location': 'Satara, Maharashtra',
+                            'GPS': '17.6599°N, 73.9894°E'
+                        }
+                    },
+                    {
+                        icon: '☀️',
+                        title: 'Sun Dried',
+                        date: 'January 12, 2026',
+                        details: {
+                            'Facility': 'Village Cooperative Drying Unit',
+                            'Method': 'Natural sun-drying',
+                            'Duration': '3 days',
+                            'Weather': 'Clear skies, 28-32°C'
+                        }
+                    },
+                    {
+                        icon: '🔬',
+                        title: 'Lab Tested',
+                        date: 'January 20, 2026',
+                        details: {
+                            'Lab': 'Organic Certification Labs, Pune',
+                            'Report ID': 'OCL-2026-01234',
+                            'Test Date': 'January 20, 2026',
+                            'Certification': 'FSSAI & Organic India'
+                        }
+                    },
+                    {
+                        icon: '📦',
+                        title: 'Packaged',
+                        date: 'February 2, 2026',
+                        details: {
+                            'Batch Size': '5,000 tea bags',
+                            'Formula': 'TULSI-TEA-2G',
+                            'Facility': 'Sacred Herbs Tea Co.',
+                            'Packaging': 'Biodegradable tea bags'
+                        }
+                    }
+                ],
+                tests: [
+                    { name: 'Moisture Content', value: '9.5%', status: 'pass', threshold: '< 12%' },
+                    { name: 'Pesticide Residues', value: 'Not Detected', status: 'pass', threshold: '< 0.01 mg/kg' },
+                    { name: 'Essential Oil Content', value: '0.7%', status: 'pass', threshold: '> 0.5%' },
+                    { name: 'Eugenol', value: '68%', status: 'pass', threshold: '> 60%' },
+                    { name: 'DNA Barcode', value: 'Ocimum sanctum', status: 'pass', threshold: 'Species confirmed' },
+                    { name: 'Organic Certification', value: 'Verified', status: 'pass', threshold: 'Certified Organic' }
+                ],
+                payment: [
+                    { value: '₹180/kg', label: 'Base Price Paid' },
+                    { value: '₹30/kg', label: 'Organic Premium' },
+                    { value: '₹16,800', label: 'Total to Collective' },
+                    { value: '7 days', label: 'Payment Processing' }
+                ]
+            },
+            'BRAHMI_2026_018': {
+                productName: 'Brahmi Leaf Extract',
+                batchId: 'BRAHMI_2026_018',
+                mfgDate: 'January 28, 2026',
+                location: 'Kottayam District, Kerala',
+                coords: [9.5916, 76.5222],
+                timeline: [
+                    {
+                        icon: '🌊',
+                        title: 'Harvested (Wetland)',
+                        date: 'January 5, 2026',
+                        details: {
+                            'Collector': 'Kerala Ayurveda Farmers (KAF_156)',
+                            'Quantity': '100 kg fresh plant',
+                            'Location': 'Kottayam, Kerala',
+                            'GPS': '9.5916°N, 76.5222°E'
+                        }
+                    },
+                    {
+                        icon: '🏭',
+                        title: 'Processed',
+                        date: 'January 8, 2026',
+                        details: {
+                            'Facility': 'AyurExtract Technologies',
+                            'Method': 'Cold-press extraction',
+                            'Temperature': '< 25°C',
+                            'Yield': '12 kg extract'
+                        }
+                    },
+                    {
+                        icon: '🔬',
+                        title: 'Lab Tested',
+                        date: 'January 15, 2026',
+                        details: {
+                            'Lab': 'PhytoScience Labs, Kochi',
+                            'Report ID': 'PSL-2026-00445',
+                            'Test Date': 'January 15, 2026',
+                            'Certification': 'GMP Certified'
+                        }
+                    },
+                    {
+                        icon: '🧪',
+                        title: 'Standardized',
+                        date: 'January 28, 2026',
+                        details: {
+                            'Batch Size': '10 liters',
+                            'Formula': 'BRAHMI-EXT-20%',
+                            'Standardization': '20% Bacosides',
+                            'Packaging': 'Amber glass bottles'
+                        }
+                    }
+                ],
+                tests: [
+                    { name: 'Bacoside Content', value: '22.3%', status: 'pass', threshold: '> 20%' },
+                    { name: 'Heavy Metals', value: 'Within limits', status: 'pass', threshold: '< WHO limits' },
+                    { name: 'Microbial Load', value: '< 10² CFU/ml', status: 'pass', threshold: '< 10³ CFU/ml' },
+                    { name: 'Aflatoxins', value: 'Not Detected', status: 'pass', threshold: '< 5 ppb' },
+                    { name: 'DNA Authentication', value: 'Bacopa monnieri', status: 'pass', threshold: 'Species confirmed' },
+                    { name: 'Solvent Residues', value: 'None', status: 'pass', threshold: 'No harmful solvents' }
+                ],
+                payment: [
+                    { value: '₹320/kg', label: 'Premium Price Paid' },
+                    { value: '₹40/kg', label: 'Quality Bonus' },
+                    { value: '₹36,000', label: 'Total Payment' },
+                    { value: '10 days', label: 'Payment Processing' }
+                ]
+            }
+        };
+
+        let map;
+
+        function verifyBatch() {
+            const input = document.getElementById('batchInput').value.trim().toUpperCase();
+            loadBatch(input);
+        }
+
+        function loadBatch(batchId) {
+            const batch = batchDatabase[batchId];
+            
+            if (!batch) {
+                alert('Batch ID not found. Please try: ASHW_2026_001, TULSI_2026_042, or BRAHMI_2026_018');
+                return;
+            }
+
+            // Update header
+            document.getElementById('productName').textContent = batch.productName;
+            document.getElementById('batchId').textContent = batch.batchId;
+            document.getElementById('mfgDate').textContent = batch.mfgDate;
+            document.getElementById('location').textContent = batch.location;
+
+            // Update timeline
+            const timelineHtml = batch.timeline.map(item => `
+                <div class="timeline-item">
+                    <div class="timeline-icon">${item.icon}</div>
+                    <div class="timeline-content">
+                        <h4>${item.title}</h4>
+                        <div class="timeline-date">📅 ${item.date}</div>
+                        <div class="timeline-details">
+                            ${Object.entries(item.details).map(([key, value]) => `
+                                <div class="detail-row">
+                                    <span class="detail-label">${key}:</span>
+                                    <span>${value}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('timelineContent').innerHTML = timelineHtml;
+
+            // Update test results
+            const testsHtml = batch.tests.map(test => `
+                <div class="test-item ${test.status}">
+                    <div>
+                        <div class="test-name">${test.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--earth-600); margin-top: 0.25rem;">
+                            Threshold: ${test.threshold}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="test-value">${test.value}</div>
+                        <span class="test-status ${test.status}">${test.status.toUpperCase()}</span>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('testResults').innerHTML = testsHtml;
+
+            // Update payment details
+            const paymentHtml = batch.payment.map(item => `
+                <div class="payment-item">
+                    <div class="payment-value">${item.value}</div>
+                    <div class="payment-label">${item.label}</div>
+                </div>
+            `).join('');
+            document.getElementById('paymentDetails').innerHTML = paymentHtml;
+
+            // Show details
+            document.getElementById('batchDetails').style.display = 'block';
+            document.getElementById('batchDetails').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Initialize map
+            setTimeout(() => initMap(batch.coords, batch.location), 100);
+        }
+
+        function initMap(coords, locationName) {
+            if (map) {
+                map.remove();
+            }
+
+            map = L.map('map').setView(coords, 10);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            const customIcon = L.divIcon({
+                html: '<div style="background: #2ecc71; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(46,204,113,0.4);">🌿</div>',
+                className: 'custom-marker',
+                iconSize: [30, 30]
+            });
+
+            L.marker(coords, { icon: customIcon })
+                .addTo(map)
+                .bindPopup(`<strong>${locationName}</strong><br>Harvest Origin`)
+                .openPopup();
+
+            setTimeout(() => map.invalidateSize(), 100);
+        }
+
+        // Auto-load first batch on page load for demo
+        window.addEventListener('load', () => {
+            // Optional: auto-load a sample batch
+            // loadBatch('ASHW_2026_001');
+        });
+    </script>
+</body>
+</html>

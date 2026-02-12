@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerbChain - Printable QR Codes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: white;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            color: #1a2f1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: #527052;
+            font-size: 1.1rem;
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .qr-card {
+            border: 3px solid #2d4a2d;
+            border-radius: 16px;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f7f0 0%, white 100%);
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .qr-card h2 {
+            font-family: 'Crimson Pro', serif;
+            color: #1a2f1a;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .batch-id {
+            background: #2ecc71;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            margin: 1.5rem auto;
+            background: white;
+            border: 2px dashed #6b8e6b;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .product-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #d9e8d9;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #3d5e3d;
+        }
+
+        .info-value {
+            color: #527052;
+        }
+
+        .scan-instruction {
+            background: #2d4a2d;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .url {
+            font-family: monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+
+        @media print {
+            body {
+                padding: 1rem;
+            }
+
+            .page-title {
+                margin-bottom: 2rem;
+            }
+
+            .qr-grid {
+                gap: 1.5rem;
+            }
+
+            .qr-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #d9e8d9;
+            color: #527052;
+        }
+
+        .footer-logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a2f1a;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-title">
+        <h1>🌿 HerbChain QR Codes</h1>
+        <p>Scan to verify complete product journey from soil to shelf</p>
+    </div>
+
+    <div class="qr-grid">
+        <!-- QR Code 1: Ashwagandha -->
+        <div class="qr-card">
+            <h2>Ashwagandha Root Capsules</h2>
+            <div class="batch-id">ASHW_2026_001</div>
+            
+            <div class="qr-placeholder">📱</div>
+            
+            <div class="product-info">
+                <div class="info-row">
+                    <span class="info-label">Origin:</span>
+                    <span class="info-value">Nagpur, Maharashtra</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Harvest Date:</span>
+                    <span class="info-value">Dec 20, 2025</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Manufactured:</span>
+                    <span class="info-value">Jan 15, 2026</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">✓ Verified</span>
+                </div>
+            </div>
+
+            <div class="scan-instruction">
+                <strong>Scan QR or visit:</strong>
+                <div class="url">your-site.vercel.app?batch=ASHW_2026_001</div>
+            </div>
+        </div>
+
+        <!-- QR Code 2: Tulsi -->
+        <div class="qr-card">
+            <h2>Organic Tulsi Tea Blend</h2>
+            <div class="batch-id">TULSI_2026_042</div>
+            
+            <div class="qr-placeholder">📱</div>
+            
+            <div class="product-info">
+                <div class="info-row">
+                    <span class="info-label">Origin:</span>
+                    <span class="info-value">Satara, Maharashtra</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Harvest Date:</span>
+                    <span class="info-value">Jan 10, 2026</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Manufactured:</span>
+                    <span class="info-value">Feb 2, 2026</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Organic:</span>
+                    <span class="info-value">✓ Certified</span>
+                </div>
+            </div>
+
+            <div class="scan-instruction">
+                <strong>Scan QR or visit:</strong>
+                <div class="url">your-site.vercel.app?batch=TULSI_2026_042</div>
+            </div>
+        </div>
+
+        <!-- QR Code 3: Brahmi -->
+        <div class="qr-card">
+            <h2>Brahmi Leaf Extract</h2>
+            <div class="batch-id">BRAHMI_2026_018</div>
+            
+            <div class="qr-placeholder">📱</div>
+            
+            <div class="product-info">
+                <div class="info-row">
+                    <span class="info-label">Origin:</span>
+                    <span class="info-value">Kottayam, Kerala</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Harvest Date:</span>
+                    <span class="info-value">Jan 5, 2026</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Manufactured:</span>
+                    <span class="info-value">Jan 28, 2026</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Bacosides:</span>
+                    <span class="info-value">22.3%</span>
+                </div>
+            </div>
+
+            <div class="scan-instruction">
+                <strong>Scan QR or visit:</strong>
+                <div class="url">your-site.vercel.app?batch=BRAHMI_2026_018</div>
+            </div>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="qr-card" style="background: linear-gradient(135deg, #2d4a2d 0%, #3d5e3d 100%); color: white;">
+            <h2 style="color: white;">How to Use</h2>
+            <div style="text-align: left; padding: 1rem; line-height: 1.8;">
+                <p style="margin-bottom: 1rem;">
+                    <strong>📱 For Judges & Visitors:</strong>
+                </p>
+                <ol style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                    <li>Open camera app on your phone</li>
+                    <li>Point at QR code above</li>
+                    <li>Tap notification to open link</li>
+                    <li>View complete product journey!</li>
+                </ol>
+                
+                <p style="margin-bottom: 0.5rem;">
+                    <strong>💻 Or Enter Manually:</strong>
+                </p>
+                <p style="opacity: 0.9; font-size: 0.95rem;">
+                    Visit the URL below and enter any batch ID (ASHW_2026_001, TULSI_2026_042, or BRAHMI_2026_018)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-logo">🌿 HerbChain</div>
+        <p>Blockchain-Powered Herbal Supply Chain Traceability</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">
+            Ensuring transparency, quality, and fair practices from soil to shelf
+        </p>
+    </div>
+
+    <script>
+        // Instructions for generating actual QR codes
+        console.log(`
+To generate real QR codes:
+
+1. Go to https://www.qr-code-generator.com/
+2. For each batch, create a QR with URL:
+   - https://your-deployed-site.vercel.app?batch=ASHW_2026_001
+   - https://your-deployed-site.vercel.app?batch=TULSI_2026_042
+   - https://your-deployed-site.vercel.app?batch=BRAHMI_2026_018
+
+3. Download QR code images
+4. Replace the 📱 emoji with actual QR code <img> tags
+
+OR use qrcode.js library to generate them dynamically!
+        `);
+    </script>
+</body>
+</html>

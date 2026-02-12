@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerbChain - Farmer Collection Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --earth-900: #1a2f1a;
+            --earth-800: #2d4a2d;
+            --earth-700: #3d5e3d;
+            --earth-600: #527052;
+            --earth-500: #6b8e6b;
+            --earth-400: #8fad8f;
+            --earth-300: #b5ccb5;
+            --earth-200: #d9e8d9;
+            --earth-100: #f0f7f0;
+            
+            --trust-green: #2ecc71;
+            --warning-amber: #f39c12;
+            --alert-red: #e74c3c;
+            --cream: #fdfbf7;
+            --charcoal: #2c3e50;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--earth-100) 0%, var(--cream) 100%);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            z-index: 1000;
+        }
+
+        header {
+            background: var(--earth-900);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🌿";
+            font-size: 2.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--trust-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--earth-800) 0%, var(--earth-700) 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--trust-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--earth-600);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .collection-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .collection-form h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--earth-900);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--earth-700);
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            padding: 0.875rem;
+            border: 2px solid var(--earth-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--trust-green);
+            box-shadow: 0 0 0 4px rgba(46,204,113,0.1);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--trust-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46,204,113,0.3);
+        }
+
+        .btn-secondary {
+            background: var(--earth-600);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .gps-display {
+            background: var(--earth-100);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .gps-display.active {
+            display: block;
+        }
+
+        .gps-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: none;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            display: block;
+        }
+
+        .alert.error {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            display: block;
+        }
+
+        .alert h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recent-harvests {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .recent-harvests h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--earth-900);
+        }
+
+        .harvest-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .harvest-table th {
+            background: var(--earth-700);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .harvest-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--earth-200);
+        }
+
+        .harvest-table tr:hover {
+            background: var(--earth-100);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-approved {
+            background: var(--trust-green);
+            color: white;
+        }
+
+        .status-pending {
+            background: var(--warning-amber);
+            color: white;
+        }
+
+        .season-info {
+            background: linear-gradient(135deg, rgba(46,204,113,0.1) 0%, rgba(39,174,96,0.1) 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--trust-green);
+        }
+
+        .season-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--earth-900);
+        }
+
+        .zones-allowed {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .zone-tag {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        footer {
+            background: var(--earth-900);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .harvest-table {
+                font-size: 0.9rem;
+            }
+
+            .harvest-table th,
+            .harvest-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    
+    <header>
+        <div class="header-content">
+            <div class="logo">HerbChain Farmer</div>
+            <div class="user-info">
+                <div class="user-avatar">👨‍🌾</div>
+                <div>
+                    <div style="font-weight: 600;">Ramesh Kumar</div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">ID: FK_2341</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Farmer Collection Portal</h1>
+            <p>Record your harvests securely on the blockchain with instant verification</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">47</div>
+                <div class="stat-label">Total Harvests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">₹2.3L</div>
+                <div class="stat-label">Earnings (2026)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">98%</div>
+                <div class="stat-label">Approval Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Days Avg Payment</div>
+            </div>
+        </div>
+
+        <div class="season-info">
+            <h3>🌱 Current Season Information</h3>
+            <p><strong>Active Season:</strong> Ashwagandha (Nov - Feb), Tulsi (Year-round), Brahmi (Oct - Mar)</p>
+            <p><strong>Allowed Zones:</strong></p>
+            <div class="zones-allowed">
+                <span class="zone-tag">📍 Nagpur District</span>
+                <span class="zone-tag">📍 Satara District</span>
+                <span class="zone-tag">📍 Kottayam District</span>
+                <span class="zone-tag">📍 Nashik District</span>
+            </div>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <div class="collection-form">
+            <h2>📝 Record New Harvest</h2>
+            <form id="harvestForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="herbType">Herb Type *</label>
+                        <select id="herbType" required>
+                            <option value="">Select herb...</option>
+                            <option value="ashwagandha">Ashwagandha Root</option>
+                            <option value="tulsi">Tulsi Leaves</option>
+                            <option value="brahmi">Brahmi Plant</option>
+                            <option value="neem">Neem Leaves</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity (kg) *</label>
+                        <input type="number" id="quantity" placeholder="e.g., 50" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <select id="location" required>
+                            <option value="">Select location...</option>
+                            <option value="nagpur">Nagpur District, Maharashtra</option>
+                            <option value="satara">Satara District, Maharashtra</option>
+                            <option value="kottayam">Kottayam District, Kerala</option>
+                            <option value="nashik">Nashik District, Maharashtra</option>
+                            <option value="pune">Pune District, Maharashtra (Out of zone)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="harvestDate">Harvest Date *</label>
+                        <input type="date" id="harvestDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" rows="3" placeholder="Any special conditions, quality observations, etc."></textarea>
+                </div>
+
+                <div class="gps-display" id="gpsDisplay">
+                    <div class="gps-info">
+                        <div>
+                            <strong>GPS Location:</strong>
+                            <div id="gpsCoords" style="font-family: monospace; margin-top: 0.25rem;"></div>
+                        </div>
+                        <div style="font-size: 2rem;">📍</div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="captureGPS()">📍 Capture GPS</button>
+                    <button type="submit" class="btn btn-primary">Submit Harvest Record</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="recent-harvests">
+            <h2>📋 Recent Harvest Records</h2>
+            <table class="harvest-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Herb</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Jan 28, 2026</td>
+                        <td>Ashwagandha</td>
+                        <td>65 kg</td>
+                        <td>Nagpur, MH</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>₹17,550</td>
+                    </tr>
+                    <tr>
+                        <td>Jan 15, 2026</td>
+                        <td>Tulsi</td>
+                        <td>42 kg</td>
+                        <td>Satara, MH</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>₹8,820</td>
+                    </tr>
+                    <tr>
+                        <td>Jan 8, 2026</td>
+                        <td>Brahmi</td>
+                        <td>38 kg</td>
+                        <td>Kottayam, KL</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>₹13,680</td>
+                    </tr>
+                    <tr>
+                        <td>Dec 22, 2025</td>
+                        <td>Ashwagandha</td>
+                        <td>58 kg</td>
+                        <td>Nagpur, MH</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>₹15,660</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>HerbChain Farmer Portal</strong> - Empowering farmers through transparent trade</p>
+        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">Blockchain-verified collections | Fair pricing guaranteed</p>
+    </footer>
+
+    <script>
+        // Season and zone validation rules
+        const validationRules = {
+            ashwagandha: {
+                season: { months: [11, 12, 1, 2], name: "November to February" },
+                zones: ['nagpur', 'nashik']
+            },
+            tulsi: {
+                season: { months: [1,2,3,4,5,6,7,8,9,10,11,12], name: "Year-round" },
+                zones: ['nagpur', 'satara', 'nashik']
+            },
+            brahmi: {
+                season: { months: [10, 11, 12, 1, 2, 3], name: "October to March" },
+                zones: ['kottayam']
+            },
+            neem: {
+                season: { months: [3, 4, 5, 6], name: "March to June" },
+                zones: ['nagpur', 'satara', 'nashik']
+            }
+        };
+
+        let currentGPS = null;
+
+        function captureGPS() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentGPS = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        document.getElementById('gpsCoords').textContent = 
+                            `${currentGPS.lat.toFixed(6)}°N, ${currentGPS.lng.toFixed(6)}°E`;
+                        document.getElementById('gpsDisplay').classList.add('active');
+                    },
+                    (error) => {
+                        // Mock GPS for demo
+                        currentGPS = {
+                            lat: 21.1458,
+                            lng: 79.0882
+                        };
+                        document.getElementById('gpsCoords').textContent = 
+                            `${currentGPS.lat.toFixed(6)}°N, ${currentGPS.lng.toFixed(6)}°E (Demo Mode)`;
+                        document.getElementById('gpsDisplay').classList.add('active');
+                    }
+                );
+            } else {
+                // Mock GPS for demo
+                currentGPS = {
+                    lat: 21.1458,
+                    lng: 79.0882
+                };
+                document.getElementById('gpsCoords').textContent = 
+                    `${currentGPS.lat.toFixed(6)}°N, ${currentGPS.lng.toFixed(6)}°E (Demo Mode)`;
+                document.getElementById('gpsDisplay').classList.add('active');
+            }
+        }
+
+        document.getElementById('harvestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const herbType = document.getElementById('herbType').value;
+            const quantity = document.getElementById('quantity').value;
+            const location = document.getElementById('location').value;
+            const harvestDate = new Date(document.getElementById('harvestDate').value);
+            const notes = document.getElementById('notes').value;
+
+            // Validation
+            if (!herbType || !quantity || !location || !harvestDate) {
+                showAlert('error', 'Validation Error', 'Please fill in all required fields.');
+                return;
+            }
+
+            if (!currentGPS) {
+                showAlert('error', 'GPS Required', 'Please capture GPS location before submitting.');
+                return;
+            }
+
+            // Check season
+            const rules = validationRules[herbType];
+            const harvestMonth = harvestDate.getMonth() + 1; // JavaScript months are 0-indexed
+            
+            if (!rules.season.months.includes(harvestMonth)) {
+                showAlert('error', 
+                    '❌ Harvest Not Allowed - Out of Season', 
+                    `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in this month. Permitted season: ${rules.season.name}.`
+                );
+                return;
+            }
+
+            // Check zone
+            if (!rules.zones.includes(location)) {
+                showAlert('error', 
+                    '❌ Harvest Not Allowed - Out of Zone', 
+                    `${herbType.charAt(0).toUpperCase() + herbType.slice(1)} cannot be harvested in ${location}. Permitted zones: ${rules.zones.join(', ')}.`
+                );
+                return;
+            }
+
+            // Success - record on blockchain (simulated)
+            const collectionId = `COL_${Date.now()}`;
+            const blockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
+            
+            showAlert('success', 
+                '✓ Harvest Recorded Successfully!', 
+                `Your harvest has been verified and recorded on the blockchain.<br><br>
+                <strong>Collection ID:</strong> ${collectionId}<br>
+                <strong>Block Hash:</strong> ${blockHash.substr(0, 16)}...<br>
+                <strong>Quantity:</strong> ${quantity} kg<br>
+                <strong>Expected Payment:</strong> ₹${(quantity * 270).toLocaleString()}<br><br>
+                Your payment will be processed within 7-15 days.`
+            );
+
+            // Reset form
+            document.getElementById('harvestForm').reset();
+            document.getElementById('gpsDisplay').classList.remove('active');
+            currentGPS = null;
+        });
+
+        function showAlert(type, title, message) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert ${type}`;
+            alertBox.innerHTML = `
+                <h3>${title}</h3>
+                <p>${message}</p>
+            `;
+            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 8000);
+        }
+
+        // Set today's date as default
+        document.getElementById('harvestDate').valueAsDate = new Date();
+    </script>
+</body>
+</html>
