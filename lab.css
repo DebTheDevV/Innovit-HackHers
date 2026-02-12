@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #f6fff8, #e9f7ef);
+  color: #1f2937;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 28px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #065f46;
+  font-weight: 500;
+}
+
+/* Layout */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+h1 {
+  margin-bottom: 25px;
+}
+
+/* Cards */
+.card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+
+/* Inputs */
+input, select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d1fae5;
+  margin: 8px 6px 8px 0;
+  outline: none;
+  font-size: 0.95rem;
+  width: 220px;
+}
+
+/* Buttons */
+button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#batchInfo p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
