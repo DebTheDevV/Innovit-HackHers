@@ -30,7 +30,7 @@
         <a href="index.html">Home</a>
         <a href="index.html#verify">Verify</a>
         <a href="farmer.html">Farmer</a>
-        <a href="qr_codes.html">QR</a>
+        
         <a href="architecture.html">Architecture</a>
       </div>
     </nav>
@@ -136,97 +136,39 @@
     </footer>
 
     <script>
-  let map;
+const API = "http://localhost:3001";
+let map;
 
-  function verifyBatch() {
-    const input = document
-      .getElementById("batchInput")
-      .value.trim()
-      .toUpperCase();
-    loadBatch(input);
-  }
+function verifyBatch() {
+  const input = document
+    .getElementById("batchInput")
+    .value.trim()
+    .toUpperCase();
+  if (!input) return;
+  loadBatch(input);
+}
 
-  function loadBatch(batchId) {
-    if (!batchId) return;
+async function loadBatch(batchId) {
+  try {
+    const res = await fetch(`${API}/api/batch/${batchId}`);
+    const data = await res.json();
 
-    // 1️⃣ Check farmer batches
-    const farmerBatches = JSON.parse(localStorage.getItem("batches")) || {};
-    if (farmerBatches[batchId]) {
-      renderFarmerBatch(farmerBatches[batchId]);
+    if (!res.ok) {
+      alert("❌ Batch not found");
       return;
     }
 
-    // 2️⃣ Check demo database
-    if (batchDatabase[batchId]) {
-      renderDemoBatch(batchDatabase[batchId]);
-      return;
-    }
+    renderBatch(data);
 
-    alert("❌ Batch ID not found: " + batchId);
+  } catch (err) {
+    alert("❌ Backend not reachable");
+    console.error(err);
   }
+}
 
-  function renderDemoBatch(batch) {
-    document.getElementById("productName").textContent = batch.productName;
-    document.getElementById("batchId").textContent = batch.batchId;
-    document.getElementById("mfgDate").textContent = batch.mfgDate;
-    document.getElementById("location").textContent = batch.location;
-
-    document.getElementById("timelineContent").innerHTML = batch.timeline
-      .map(
-        (item) => `
-        <div class="timeline-item">
-          <div class="timeline-icon">${item.icon}</div>
-          <div class="timeline-content">
-            <h4>${item.title}</h4>
-            <div class="timeline-date">${item.date}</div>
-            <div class="timeline-details">
-              ${Object.entries(item.details)
-                .map(
-                  ([k, v]) =>
-                    `<div class="detail-row"><b>${k}:</b> ${v}</div>`,
-                )
-                .join("")}
-            </div>
-          </div>
-        </div>
-      `,
-      )
-      .join("");
-
-    document.getElementById("testResults").innerHTML = batch.tests
-      .map(
-        (t) => `
-        <div class="test-item ${t.status}">
-          <div>
-            <div class="test-name">${t.name}</div>
-            <div style="font-size:0.8rem;">Threshold: ${t.threshold}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="test-value">${t.value}</div>
-            <span class="test-status ${t.status}">${t.status.toUpperCase()}</span>
-          </div>
-        </div>
-      `,
-      )
-      .join("");
-
-    document.getElementById("paymentDetails").innerHTML = batch.payment
-      .map(
-        (p) => `
-        <div class="payment-item">
-          <div class="payment-value">${p.value}</div>
-          <div class="payment-label">${p.label}</div>
-        </div>
-      `,
-      )
-      .join("");
-
-    showBatch(batch.coords, batch.location);
-  }
- function renderFarmerBatch(data) {
+function renderBatch(data) {
   let timeline = [];
 
-  // 🌱 Harvest Stage
   timeline.push({
     icon: "🌿",
     title: "Harvested",
@@ -234,11 +176,11 @@
     details: {
       Herb: data.herb,
       Quantity: data.quantity + " kg",
-      GPS: `${data.gps.lat}, ${data.gps.lng}`
+      GPS: `${data.gps.lat}, ${data.gps.lng}`,
+      Location: data.location
     }
   });
 
-  // 🏭 Processing Stage
   if (data.processing) {
     timeline.push({
       icon: "🏭",
@@ -252,7 +194,6 @@
     });
   }
 
-  // 🧪 Lab Stage
   if (data.lab) {
     timeline.push({
       icon: "🧪",
@@ -273,6 +214,7 @@
     data.herb.toUpperCase() + " Product";
 
   document.getElementById("batchId").textContent = data.batchId;
+
   document.getElementById("mfgDate").textContent =
     new Date(data.harvestDate).toDateString();
 
@@ -280,27 +222,23 @@
 
   document.getElementById("timelineContent").innerHTML = timeline
     .map(
-      (item) => `
-        <div class="timeline-item">
-          <div class="timeline-icon">${item.icon}</div>
-          <div class="timeline-content">
-            <h4>${item.title}</h4>
-            <div class="timeline-date">${item.date}</div>
-            <div class="timeline-details">
-              ${Object.entries(item.details)
-                .map(
-                  ([k, v]) =>
-                    `<div class="detail-row"><b>${k}:</b> ${v}</div>`
-                )
-                .join("")}
-            </div>
+      item => `
+      <div class="timeline-item">
+        <div class="timeline-icon">${item.icon}</div>
+        <div class="timeline-content">
+          <h4>${item.title}</h4>
+          <div class="timeline-date">${item.date}</div>
+          <div class="timeline-details">
+            ${Object.entries(item.details)
+              .map(([k,v]) => `<div class="detail-row"><b>${k}:</b> ${v}</div>`)
+              .join("")}
           </div>
         </div>
-      `
+      </div>
+    `
     )
     .join("");
 
-  // Lab Results UI
   if (data.lab) {
     document.getElementById("testResults").innerHTML = `
       <div class="test-item pass">
@@ -332,39 +270,39 @@
   showBatch([data.gps.lat, data.gps.lng], data.location);
 }
 
-  function showBatch(coords, locationName) {
-    document.getElementById("batchDetails").style.display = "block";
-    document
-      .getElementById("batchDetails")
-      .scrollIntoView({ behavior: "smooth" });
+function showBatch(coords, locationName) {
+  document.getElementById("batchDetails").style.display = "block";
+  document
+    .getElementById("batchDetails")
+    .scrollIntoView({ behavior: "smooth" });
 
-    setTimeout(() => initMap(coords, locationName), 200);
+  setTimeout(() => initMap(coords, locationName), 200);
+}
+
+function initMap(coords, locationName) {
+  if (map) map.remove();
+
+  map = L.map("map").setView(coords, 10);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
+  }).addTo(map);
+
+  L.marker(coords)
+    .addTo(map)
+    .bindPopup(`<b>${locationName}</b><br>Harvest Origin`)
+    .openPopup();
+}
+
+// QR auto load
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const batchId = params.get("batch");
+  if (batchId) {
+    document.getElementById("batchInput").value = batchId;
+    loadBatch(batchId.toUpperCase());
   }
-
-  function initMap(coords, locationName) {
-    if (map) map.remove();
-
-    map = L.map("map").setView(coords, 10);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors",
-    }).addTo(map);
-
-    L.marker(coords)
-      .addTo(map)
-      .bindPopup(`<b>${locationName}</b><br>Harvest Origin`)
-      .openPopup();
-  }
-
-  // Auto load from QR
-  window.addEventListener("load", () => {
-    const params = new URLSearchParams(window.location.search);
-    const batchId = params.get("batch");
-    if (batchId) {
-      document.getElementById("batchInput").value = batchId;
-      loadBatch(batchId.toUpperCase());
-    }
-  });
+});
 </script>
   </body>
 </html>

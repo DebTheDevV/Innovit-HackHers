@@ -1,109 +1,94 @@
+const API = "http://localhost:3001";
 let currentBatch = null;
 
-/* ----------- Batch ID Normalizer ----------- */
-function normalizeBatchId(id) {
-  const map = {
-    ASHWAGANDHA: "ASHW",
-    TULSI: "TULSI",
-    BRAHMI: "BRAHMI",
-    NEEM: "NEEM"
-  };
-
-  const parts = id.split("_");
-  if (map[parts[0]]) parts[0] = map[parts[0]];
-  return parts.join("_");
-}
-
 /* ----------- Load Batch ----------- */
-function loadBatch() {
+async function loadBatch() {
   let batchId = document.getElementById("batchId").value.trim().toUpperCase();
 
-  console.log("🔍 Searching:", batchId);
-
-  let raw = localStorage.getItem(batchId);
-
-  if (!raw) {
-    const batches = JSON.parse(localStorage.getItem("batches") || "{}");
-    raw = batches[batchId];
+  if (!batchId) {
+    alert("❌ Enter batch ID");
+    return;
   }
 
-  if (!raw) {
-    const normalized = normalizeBatchId(batchId);
-    console.log("🔁 Trying normalized:", normalized);
+  try {
+    const res = await fetch(`${API}/api/batch/${batchId}`);
+    const data = await res.json();
 
-    raw = localStorage.getItem(normalized);
-
-    if (!raw) {
-      const batches = JSON.parse(localStorage.getItem("batches") || "{}");
-      raw = batches[normalized];
+    if (!res.ok) {
+      alert("❌ Batch not found");
+      return;
     }
 
-    batchId = normalized;
+    if (!data.processing) {
+      alert("❌ Batch not processed yet");
+      return;
+    }
+
+    currentBatch = data;
+
+    document.getElementById("batchInfo").innerHTML = `
+      <h3>Batch Loaded ✔</h3>
+      <p><b>Batch ID:</b> ${data.batchId}</p>
+      <p><b>Herb:</b> ${data.herb}</p>
+      <p><b>Quantity:</b> ${data.quantity} kg</p>
+      <p><b>Processing Method:</b> ${data.processing.method}</p>
+      <p><b>Facility:</b> ${data.processing.facility}</p>
+      <p><b>Operator:</b> ${data.processing.operator}</p>
+    `;
+
+    document.getElementById("labForm").style.display = "block";
+
+  } catch (err) {
+    alert("❌ Backend not reachable");
+    console.error(err);
   }
-
-  if (!raw) {
-    alert("❌ Batch not found: " + batchId);
-    return;
-  }
-
-  currentBatch = typeof raw === "string" ? JSON.parse(raw) : raw;
-
-  if (!currentBatch.processing) {
-    alert("❌ Batch not processed yet");
-    return;
-  }
-
-  document.getElementById("batchInfo").innerHTML = `
-    <h3>Batch Loaded ✔</h3>
-    <p><b>Batch ID:</b> ${currentBatch.batchId || batchId}</p>
-    <p><b>Herb:</b> ${currentBatch.herb}</p>
-    <p><b>Quantity:</b> ${currentBatch.quantity} kg</p>
-    <p><b>Processing Method:</b> ${currentBatch.processing.method}</p>
-    <p><b>Facility:</b> ${currentBatch.processing.facility}</p>
-    <p><b>Operator:</b> ${currentBatch.processing.operator}</p>
-  `;
-
-  document.getElementById("labForm").style.display = "block";
 }
 
 /* ----------- Submit Lab Report ----------- */
-function submitLab() {
+async function submitLab() {
   if (!currentBatch) {
     alert("❌ Load batch first");
     return;
   }
 
-  const moisture = document.getElementById("moisture").value;
-  const compound = document.getElementById("compound").value;
-  const microbial = document.getElementById("microbial").value;
-  const heavyMetal = document.getElementById("heavyMetal").value;
-  const purity = document.getElementById("purity").value;
-  const labName = document.getElementById("labName").value;
-  const testDate = document.getElementById("testDate").value;
+  const lab = {
+    moisture: document.getElementById("moisture").value,
+    compound: document.getElementById("compound").value,
+    microbial: document.getElementById("microbial").value,
+    heavyMetal: document.getElementById("heavyMetal").value,
+    purity: document.getElementById("purity").value,
+    labName: document.getElementById("labName").value,
+    testDate: document.getElementById("testDate").value,
+    timestamp: new Date().toISOString()
+  };
 
-  if (!moisture || !compound || !microbial || !heavyMetal || !purity || !labName || !testDate) {
+  if (Object.values(lab).some(v => !v)) {
     alert("❌ Fill all lab fields");
     return;
   }
 
-  currentBatch.lab = {
-    moisture,
-    compound,
-    microbial,
-    heavyMetal,
-    purity,
-    labName,
-    testDate,
-    timestamp: new Date().toISOString()
-  };
+  try {
+    const res = await fetch(`${API}/api/lab`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        batchId: currentBatch.batchId,
+        lab
+      })
+    });
 
-  currentBatch.status = "lab_verified";
+    const data = await res.json();
 
-  const batches = JSON.parse(localStorage.getItem("batches") || "{}");
-  batches[currentBatch.batchId] = currentBatch;
-  localStorage.setItem("batches", JSON.stringify(batches));
+    if (!res.ok) {
+      alert("❌ Error: " + (data.error || "Unknown"));
+      return;
+    }
 
-  alert("✅ Lab Report Saved Successfully");
+    alert("✅ Lab Report Submitted Successfully!");
+    document.getElementById("labForm").reset();
 
-  document.getElementById("labForm").reset?.();
+  } catch (err) {
+    alert("❌ Backend not reachable");
+    console.error(err);
+  }
 }
