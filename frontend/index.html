@@ -15,6 +15,16 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="index.css" />
   </head>
+
+  <script type="module">
+  import { connectWallet } from "./src/web3.js";
+
+  document.getElementById("connectWallet").onclick = async () => {
+    const addr = await connectWallet();
+    alert("Connected: " + addr);
+  };
+</script>
+
   <body>
    
 
@@ -25,12 +35,15 @@
         
       <nav class="navbar">
   <div class="logo">VanaspatiSetu🌿</div>
+
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="farmer.html">Farmer</a>
     <a href="processor.html">Processor</a>
     <a href="lab.html">Lab</a>
   </div>
+
+ <button id="connectWallet">🔐 Connect Wallet</button>
 </nav>
     </header>
 
@@ -301,6 +314,17 @@ window.addEventListener("load", () => {
     loadBatch(batchId.toUpperCase());
   }
 });
+</script>
+
+<script type="module">
+  import { connectWallet } from "./src/wallet.js";
+
+  const btn = document.getElementById("connectWallet");
+
+  btn.onclick = async () => {
+    const addr = await connectWallet();
+    btn.innerText = addr.slice(0, 6) + "..." + addr.slice(-4);
+  };
 </script>
   </body>
 </html>

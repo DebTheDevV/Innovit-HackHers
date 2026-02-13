@@ -2,6 +2,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
     "cors": "^2.8.6",
+    "ethers": "^6.16.0",
     "viem": "^2.45.3",
     "wagmi": "^3.4.3"
   }

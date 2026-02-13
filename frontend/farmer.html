@@ -231,6 +231,13 @@
       </div>
     </div>
 
+    <input id="batchId" placeholder="Enter Batch ID">
+
+    <button id="registerBtn" class="btn btn-primary">
+  Register Batch (Blockchain)
+</button>
+
+
     <footer>
       <p>
         <strong>VanaspatiSetu Farmer Portal</strong> - Empowering farmers through
@@ -347,6 +354,7 @@ async function submitHarvest(e) {
     showAlert("success", "Harvest Recorded", `Batch ID: ${batchId}`);
 
     generateAndShowQR(batchId);
+    await autoRegisterOnChain(batchId);
 
     document.getElementById("harvestForm").reset();
     document.getElementById("gpsDisplay").classList.remove("active");
@@ -408,7 +416,10 @@ function showAlert(type, title, message) {
 /* ================= DEFAULT DATE ================= */
 
 harvestDate.valueAsDate = new Date();
+
+
 </script>
+
 
   </body>
 </html>

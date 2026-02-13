@@ -530,3 +530,35 @@
 .nav-links a:hover {
   color: #00ffcc;
 }
+
+.wallet-btn {
+  padding: 8px 14px;
+  background: #1e8e3e;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wallet-btn:hover {
+  background: #166c2f;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+.wallet-btn {
+  margin-left: 20px;
+  white-space: nowrap;
+}
