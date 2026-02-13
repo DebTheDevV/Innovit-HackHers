@@ -91,7 +91,7 @@ VanaspatiSetu/
 │   └── styles/
 │
 ├── backend/
-│   ├── server.js         → Express API
+│   ├── server.cjs        → Express API
 │   ├── routes/
 │   └── data/
 │
@@ -146,7 +146,7 @@ VanaspatiSetu/
 ```bash
 cd backend
 npm install
-node server.js
+npm start
 ```
 
 Backend runs at:
@@ -176,7 +176,7 @@ POST /api/harvest
 
 ### Fetch Batch
 ```
-GET /batch/:batchId
+GET /api/batch/:batchId
 ```
 
 ---

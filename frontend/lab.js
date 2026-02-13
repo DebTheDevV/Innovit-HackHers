@@ -1,4 +1,4 @@
-const API = "https://innovit-hackhers.onrender.com/";
+const API = (window.API_BASE_URL || "https://innovit-hackhers.onrender.com").replace(/\/+$/, "");
 let currentBatch = null;
 
 /* ----------- Load Batch ----------- */
