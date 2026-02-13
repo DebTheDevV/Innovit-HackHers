@@ -9,10 +9,19 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.0.7",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.2",
+    "@types/node": "^22.19.11",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "^3.1.8",
+    "typescript": "~5.8.0",
+    "viem": "^2.45.3"
   }
 }

@@ -86,3 +86,14 @@ app.post("/api/lab", (req, res) => {
 
   res.json({ success: true, message: "Lab report saved" });
 });
+
+
+
+
+
+
+
+
+
+
+// ---------------------------------------
