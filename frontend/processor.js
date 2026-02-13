@@ -1,4 +1,4 @@
-const API = "http://localhost:3001";
+const API = "https://innovit-hackhers.onrender.com/";
 
 let currentBatch = null;
 
