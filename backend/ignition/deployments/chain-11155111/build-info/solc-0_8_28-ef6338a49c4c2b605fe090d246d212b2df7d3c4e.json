@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-ef6338a49c4c2b605fe090d246d212b2df7d3c4e",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/BatchAnchor.sol": "project/contracts/BatchAnchor.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/BatchAnchor.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.28;\n\ncontract BatchAnchor {\n\n    struct BatchProof {\n        bytes32 hash;\n        uint256 timestamp;\n        address anchoredBy;\n    }\n\n    mapping(string => BatchProof) private proofs;\n\n    event BatchAnchored(\n        string batchId,\n        bytes32 hash,\n        uint256 timestamp,\n        address indexed anchoredBy\n    );\n\n    function anchorBatch(string memory batchId, bytes32 hash) public {\n        require(proofs[batchId].timestamp == 0, \"Batch already anchored\");\n\n        proofs[batchId] = BatchProof({\n            hash: hash,\n            timestamp: block.timestamp,\n            anchoredBy: msg.sender\n        });\n\n        emit BatchAnchored(batchId, hash, block.timestamp, msg.sender);\n    }\n\n    function verifyBatch(string memory batchId, bytes32 hash)\n        public\n        view\n        returns (bool valid, uint256 timestamp, address anchoredBy)\n    {\n        BatchProof memory proof = proofs[batchId];\n\n        if (proof.timestamp == 0) {\n            return (false, 0, address(0));\n        }\n\n        return (\n            proof.hash == hash,\n            proof.timestamp,\n            proof.anchoredBy\n        );\n    }\n}"
+      }
+    }
+  }
+}

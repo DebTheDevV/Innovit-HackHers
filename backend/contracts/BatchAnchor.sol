@@ -1,35 +1,50 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.28;
 
-contract BatchRegistry {
+contract BatchAnchor {
 
-    address public owner;
-
-    struct Batch {
-        string batchId;
-        string hash;
+    struct BatchProof {
+        bytes32 hash;
         uint256 timestamp;
+        address anchoredBy;
     }
 
-    mapping(string => Batch) private batches;
+    mapping(string => BatchProof) private proofs;
 
-    event BatchStored(string batchId, string hash, uint256 time);
+    event BatchAnchored(
+        string batchId,
+        bytes32 hash,
+        uint256 timestamp,
+        address indexed anchoredBy
+    );
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not authorized");
-        _;
+    function anchorBatch(string memory batchId, bytes32 hash) public {
+        require(proofs[batchId].timestamp == 0, "Batch already anchored");
+
+        proofs[batchId] = BatchProof({
+            hash: hash,
+            timestamp: block.timestamp,
+            anchoredBy: msg.sender
+        });
+
+        emit BatchAnchored(batchId, hash, block.timestamp, msg.sender);
     }
 
-    constructor() {
-        owner = msg.sender;
-    }
+    function verifyBatch(string memory batchId, bytes32 hash)
+        public
+        view
+        returns (bool valid, uint256 timestamp, address anchoredBy)
+    {
+        BatchProof memory proof = proofs[batchId];
 
-    function storeBatchHash(string memory _batchId, string memory _hash) public onlyOwner {
-        batches[_batchId] = Batch(_batchId, _hash, block.timestamp);
-        emit BatchStored(_batchId, _hash, block.timestamp);
-    }
+        if (proof.timestamp == 0) {
+            return (false, 0, address(0));
+        }
 
-    function getBatchHash(string memory _batchId) public view returns (string memory, uint256) {
-        return (batches[_batchId].hash, batches[_batchId].timestamp);
+        return (
+            proof.hash == hash,
+            proof.timestamp,
+            proof.anchoredBy
+        );
     }
 }
